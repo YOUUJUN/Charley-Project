@@ -5,9 +5,11 @@
 </template>
 
 <script>
-(function () {
-    document.cookie = "username = youjun;";
-})();
+
+	export default {
+		name : "App"
+	}
+
 </script>
 
 <style>

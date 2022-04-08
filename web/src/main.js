@@ -4,21 +4,17 @@ import router from './router'
 import store from './store'
 import axios from 'axios'
 
-// import {Container, Scrollbar} from 'element-ui';
+import {Container, Scrollbar} from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 
-// const components = [
-//   Container,
-//   Scrollbar
-// ];
+const components = [
+  Container,
+  Scrollbar
+];
 
-// components.forEach((component) => {
-//   Vue.use(component);
-// })
-
-import Element from 'element-ui';
-
-Vue.use(Element);
+components.forEach((component) => {
+  Vue.use(component);
+})
 
 
 

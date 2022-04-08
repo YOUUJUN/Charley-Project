@@ -7,7 +7,7 @@
             <el-container>
                 <el-main class="content-wrap">
                     <div class="content">
-                        <el-scrollbar>
+                        <el-scrollbar style="height: 100%;">
                             <router-view />
                         </el-scrollbar>
                     </div>
@@ -92,6 +92,11 @@ body > .el-container {
         bottom:0;
         left:0;
         right:0;
+        overflow: hidden;
+    }
+
+    /deep/ .el-scrollbar__wrap {
+        overflow-x: hidden;
     }
 	
 

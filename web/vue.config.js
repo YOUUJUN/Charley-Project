@@ -167,17 +167,17 @@ module.exports = function(){
                     return options;
                 })
 
-            config  //去除生产环境console;
-                .optimization
-                .minimize(true)
-                .minimizer('terser')
-                .tap(args => {
-                    let {terserOptions} = args[0];
-                    console.log('terserOptions', terserOptions);
-                    terserOptions.compress.drop_console = true;
-                    terserOptions.compress.drop_debugger = true;
-                    return args;
-                })
+            // config  //去除生产环境console;
+            //     .optimization
+            //     .minimize(true)
+            //     .minimizer('terser')
+            //     .tap(args => {
+            //         let {terserOptions} = args[0];
+            //         console.log('terserOptions', terserOptions);
+            //         terserOptions.compress.drop_console = true;
+            //         terserOptions.compress.drop_debugger = true;
+            //         return args;
+            //     })
 
 
             // config.optimization.minimizer[0].options.terserOptions.compress.pure_funcs = ['console.log'];

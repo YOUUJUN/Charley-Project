@@ -4,6 +4,21 @@ import router from './router'
 import store from './store'
 import axios from 'axios'
 
+import {Container} from 'element-ui';
+
+const components = [
+  Container
+];
+
+components.forEach((component) => {
+  Vue.use(component);
+})
+
+
+
+
+
+
 Vue.config.productionTip = false;
 
 /*---init axios---*/

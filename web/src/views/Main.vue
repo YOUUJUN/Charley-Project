@@ -1,16 +1,15 @@
 <template>
 
-    <div class="yj-view yj-view-container main">
-        <div class="yj-view-area">
-
-        <h2>测试...</h2><h2>版本名:<span>{{name}}</span></h2>
-
-        <textarea class="content">{{content}}</textarea>
-        <button class="btn" v-on:click="send()">提交</button>
-        <button class="btn" v-on:click="push()">比较冲突</button>
-
-        </div>
-    </div>
+    <el-container>
+        <el-header>Header</el-header>
+        <el-container>
+            <el-aside width="200px">Aside</el-aside>
+            <el-container>
+            <el-main>Main</el-main>
+            <el-footer>Footer</el-footer>
+            </el-container>
+        </el-container>
+    </el-container>
 
 </template>
 
@@ -19,49 +18,52 @@
     export default {
         name: "Main",
         methods : {
-            send : function () {
-                this.$axios({
-                    url : "/getFile",
-                    method : "POST",
-                    transformResponse: [function (data) {
-                        return JSON.parse(data);
-                    }],
-                }).then(value => {
-                    console.log("value",value);
-                }).catch(err => {
-                    console.log(err);
-                })
-            },
-            push : function () {
-                console.log("hello");
-            }
+            
         }
     };
 
 </script>
 
 <style scoped>
-    @import "../assets/css/component.css";
 
-    .main{
-        width: 1170px;
-        margin: 0 auto;
-        text-align: left;
-    }
+    
 
-    .content{
-        width: 400px;
-        height:650px;
-    }
+</style>
 
-    .btn{
-        display: block;
-        height: 40px;
-        line-height: 38px;
-        font-size: 20px;
-        margin-top: 20px;
-    }
-
+<style>
+  .el-header, .el-footer {
+    background-color: #B3C0D1;
+    color: #333;
+    text-align: center;
+    line-height: 60px;
+  }
+  
+  .el-aside {
+    background-color: #D3DCE6;
+    color: #333;
+    text-align: center;
+    line-height: 200px;
+  }
+  
+  .el-main {
+    background-color: #E9EEF3;
+    color: #333;
+    text-align: center;
+    line-height: 160px;
+  }
+  
+  body > .el-container {
+    margin-bottom: 40px;
+  }
+  
+  .el-container:nth-child(5) .el-aside,
+  .el-container:nth-child(6) .el-aside {
+    line-height: 260px;
+  }
+  
+  .el-container:nth-child(7) .el-aside {
+    line-height: 320px;
+  }
 </style>
 
 

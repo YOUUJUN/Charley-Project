@@ -1,8 +1,12 @@
 <template>
     
-    <section>
+    <section class="main-wrap">
 
-        <div class="fill"></div>
+        <div class="card-container">
+            <template v-for="item in 100">
+                <div>{{item}}</div>
+            </template>
+        </div>
 
     </section>
 
@@ -15,46 +19,24 @@ export default {
 };
 </script>
 
-<style>
-.el-header,
-.el-footer {
-    background-color: #b3c0d1;
-    color: #333;
-    text-align: center;
-    line-height: 60px;
-}
-
-.el-aside {
-    background-color: #d3dce6;
-    color: #333;
-    text-align: center;
-    line-height: 200px;
-}
-
-.el-main {
-    background-color: #e9eef3;
-    color: #333;
-    text-align: center;
-    line-height: 160px;
-}
-
-body > .el-container {
-    margin-bottom: 40px;
-}
-
-.el-container:nth-child(5) .el-aside,
-.el-container:nth-child(6) .el-aside {
-    line-height: 260px;
-}
-
-.el-container:nth-child(7) .el-aside {
-    line-height: 320px;
-}
-</style>
-
 <style scoped>
-	.fill{
-        height:2000px;
+
+
+    .main-wrap{
+
+    }
+
+    .card-container{
+        background: #fff;
+        box-shadow: -1px -1px 5px 0 rgba(0,0,0,.1);
+        margin:1.5rem;
+        padding: 1rem;
+    }
+
+
+
+	.main-wrap div{
+       line-height: 2rem; 
     }
 
 	

@@ -1,0 +1,110 @@
+<template>
+    <el-container class="root-wrap">
+        <el-header class="header-wrap">Header</el-header>
+
+        <el-container class="main-wrap">
+            <el-aside width="200px">Aside</el-aside>
+            <el-container>
+                <el-main class="content-wrap">
+                    <div class="content">
+                        <el-scrollbar>
+                            <router-view />
+                        </el-scrollbar>
+                    </div>
+				</el-main>
+                <el-footer>Footer</el-footer>
+            </el-container>
+        </el-container>
+
+    </el-container>
+</template>
+
+<script>
+
+export default {
+    name: "Layout",
+
+    components : {
+        
+    },
+
+    methods: {},
+};
+</script>
+
+<style>
+.el-header,
+.el-footer {
+    background-color: #b3c0d1;
+    color: #333;
+    text-align: center;
+    line-height: 60px;
+}
+
+.el-aside {
+    background-color: #d3dce6;
+    color: #333;
+    text-align: center;
+    line-height: 200px;
+}
+
+.el-main {
+    background-color: #e9eef3;
+    color: #333;
+    text-align: center;
+    line-height: 160px;
+}
+
+body > .el-container {
+    margin-bottom: 40px;
+}
+
+.el-container:nth-child(5) .el-aside,
+.el-container:nth-child(6) .el-aside {
+    line-height: 260px;
+}
+
+.el-container:nth-child(7) .el-aside {
+    line-height: 320px;
+}
+</style>
+
+<style scoped>
+	.root-wrap{
+		height: 100%;
+	}
+
+	.header-wrap{
+		flex:none;
+	}
+
+	.main-wrap{
+		flex:auto;
+	}
+
+    .content-wrap{
+        position: relative;
+    }
+
+    .content{
+        position:absolute;
+        top:0;
+        bottom:0;
+        left:0;
+        right:0;
+    }
+	
+
+</style>
+
+
+
+
+
+
+
+
+
+
+
+

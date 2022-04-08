@@ -12,18 +12,18 @@
 
 <style>
 
-	body{
+	html, body{
 		height: 100%;
+		margin:0;
+		padding:0;
+		font-size: 14px;
 	}
 
 	#app{
 		height: 100%;
 	}
 
-	body{
-		margin:0;
-		padding:0;
-	}
+
 
 
 

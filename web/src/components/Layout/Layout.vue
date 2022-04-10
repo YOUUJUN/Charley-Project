@@ -116,7 +116,7 @@ body > .el-container {
     }
 
     /deep/ .el-scrollbar__wrap {
-        overflow-x: hidden;
+        overflow-x: auto;
     }
 	
 

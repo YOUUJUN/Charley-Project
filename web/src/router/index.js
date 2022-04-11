@@ -15,7 +15,11 @@ const routes = [
 			{
 				path : "Main",
 				name : "Main",
-				component : () => import('@views/Main/Main.vue')
+				components : {
+                    default : () => import('@views/Main/Index.vue'),
+                    navCtrl : () => import('@views/Main/Ctrl.vue'),
+                    sideMenu : () => import('@views/Main/Menu.vue'),
+                }
 			}
 		],
     },

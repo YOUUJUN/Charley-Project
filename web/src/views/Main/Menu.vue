@@ -71,7 +71,7 @@ export default {
 
         openFloor(code){
             console.log('code',code);
-            let payload = new Array(32);
+            let payload = new Array(30);
             payload.fill({
                 name : 'YOUJUN',
                 age : 90

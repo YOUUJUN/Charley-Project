@@ -5,7 +5,7 @@ import Layout from "@components/Layout/Layout.vue";
 
 Vue.use(VueRouter);
 
-const constantRoutes = [
+export const constantRoutes = [
     {
         path: "/",
         name: "Layout",
@@ -32,6 +32,11 @@ const constantRoutes = [
     //   component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
     // }
 ];
+
+export const asyncRouters = [
+    
+]
+
 
 const router = new VueRouter({
     mode: "history",

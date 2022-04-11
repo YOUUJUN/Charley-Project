@@ -5,7 +5,7 @@ import Layout from "@components/Layout/Layout.vue";
 
 Vue.use(VueRouter);
 
-const routes = [
+const constantRoutes = [
     {
         path: "/",
         name: "Layout",
@@ -36,7 +36,7 @@ const routes = [
 const router = new VueRouter({
     mode: "history",
     base: process.env.BASE_URL,
-    routes,
+    routes : constantRoutes,
 });
 
 export default router;

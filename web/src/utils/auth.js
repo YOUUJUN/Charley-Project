@@ -1,7 +1,7 @@
 const TokenKey = 'marscript'
 
 export function getToken() {
-  return localStorage.setItem(TokenKey)
+  return localStorage.getItem(TokenKey)
 }
 
 export function setToken(token) {

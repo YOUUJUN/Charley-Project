@@ -55,7 +55,7 @@
 import { mapState } from "vuex";
 
 export default {
-    name: "Index",
+    name: "Main",
 
     data() {
         return {
@@ -137,6 +137,7 @@ export default {
     box-shadow: -1px -1px 5px 0 rgba(0, 0, 0, 0.1);
     margin: 1.5rem;
     padding: 1rem;
+    overflow: auto;
 }
 
 .content-row {

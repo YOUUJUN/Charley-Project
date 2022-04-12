@@ -31,10 +31,15 @@
             <i class="el-icon-document"></i>
             <span slot="title">导航三</span>
         </el-menu-item>
-        <el-menu-item index="4">
+        <el-menu-item index="4" @click="$router.push({path : '/Main'})">
             <i class="el-icon-setting"></i>
-            <span slot="title">导航四</span>
+            <span slot="title">宫格展示</span>
         </el-menu-item>
+        <el-menu-item index="5" @click="$router.push({path : '/Charts'})">
+            <i class="el-icon-setting"></i>
+            <span slot="title">ECharts图表</span>
+        </el-menu-item>
+        
 
     </el-menu>
 </template>
@@ -43,7 +48,6 @@
 import {mapActions} from "vuex";
 
 export default {
-    name: "Menu",
 
     data() {
         return {
@@ -67,7 +71,6 @@ export default {
         ...mapActions('display', [
             'getUserInfo'
         ]),
-
 
         openFloor(code){
             console.log('code',code);

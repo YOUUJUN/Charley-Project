@@ -20,9 +20,21 @@ export const constantRoutes = [
                     navCtrl : () => import('@views/Main/Ctrl.vue'),
                     sideMenu : () => import('@views/Main/Menu.vue'),
                 }
-			}
+			},
+
+            {
+                path : "Charts",
+                name : "Charts",
+                components : {
+                    default : () => import('@views/Chart/Index.vue'),
+                    navCtrl : () => import('@views/Main/Ctrl.vue'),
+                    sideMenu : () => import('@views/Main/Menu.vue'),
+                }
+            }
 		],
     },
+
+
     // {
     //   path: '/about',
     //   name: 'about',

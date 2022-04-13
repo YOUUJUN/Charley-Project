@@ -18,7 +18,7 @@
 		height: 100%;
 		margin:0;
 		padding:0;
-		font-size: 14px;
+		font-size: 62.5%;
 		font-family: Poppins,sans-serif;
 		box-sizing: border-box;
 	}

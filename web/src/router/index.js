@@ -19,7 +19,10 @@ export const constantRoutes = [
                     default : () => import('@views/Main/Index.vue'),
                     navCtrl : () => import('@views/Main/Ctrl.vue'),
                     sideMenu : () => import('@views/Main/Menu.vue'),
-                }
+                },
+                meta : {
+                    title : "宫格布局"
+                },
 			},
 
             {
@@ -29,7 +32,10 @@ export const constantRoutes = [
                     default : () => import('@views/Chart/Index.vue'),
                     navCtrl : () => import('@views/Main/Ctrl.vue'),
                     sideMenu : () => import('@views/Main/Menu.vue'),
-                }
+                },
+                meta : {
+                    title : "ECharts图表"
+                },
             }
 		],
     },

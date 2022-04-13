@@ -6,7 +6,7 @@
 
         <el-container class="main-wrap">
             
-            <el-aside class="aside-wrap" width="240px">
+            <el-aside class="aside-wrap" width="">
                 <div class="aside">
                     <el-scrollbar style="height: 100%;">
                     <side-bar></side-bar>
@@ -99,6 +99,7 @@ body > .el-container {
 	}
 
     .content-wrap, .aside-wrap{
+        width:24rem !important;
         position: relative;
     }
 

@@ -5,6 +5,12 @@
 
         <section class="center">
 
+            <div class="bread-wrap">
+
+                <breadcrumb></breadcrumb>
+
+            </div>
+
             <div class="ctrl-wrap">
 
                 <router-view name="navCtrl"/>
@@ -35,9 +41,15 @@
 </template>
 
 <script>
+
+const breadcrumb = () => import('@/components/Breadcrumb/Index.vue');
+
 export default {
-    name : 'NavBar'
+    name : 'NavBar',
     
+    components : {
+        breadcrumb
+    }
 
 }
 </script>
@@ -53,8 +65,7 @@ export default {
         align-items: center;
         height: 100%;
         line-height: 100%;
-        padding:0 2rem;
-        border-bottom: 1px solid #f5f5f5;
+        border-bottom: .1rem solid #f5f5f5;
         box-sizing: border-box;
     }
 
@@ -63,12 +74,14 @@ export default {
     }
 
     .start{
+        width:24rem;
         flex: none;
     }
 
     .center{
         display: flex;
-        justify-content: flex-end;
+        justify-content: space-between;
+        align-items: center;
         flex:auto;
         margin:0 7.5rem;
     }
@@ -80,6 +93,7 @@ export default {
     .end{
         flex:none;
         margin-left: 1.5rem;
+        margin-right:2rem;
     }
 
     .avatar-wrap{

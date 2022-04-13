@@ -146,6 +146,7 @@ export default {
 }
 
 .user-card {
+    font-size: 1.2rem;
     width: 6rem;
     margin: 0.5rem;
     margin-bottom: 1rem;

@@ -18,42 +18,16 @@ const webpack = require("webpack");
 const CompressionWebpackPlugin = require('compression-webpack-plugin');
 
 const productionGzipExtensions = ['js', 'css'];
-const buildPageSync = () => {
-    let pages = {};
-    let pagesPath = path.join(__dirname,"/src/pages");
 
-    let files = fs.readdirSync(pagesPath);
-
-    for(let file of files){
-        let filePath = path.join(pagesPath,file);
-        let page = {};
-        let stat = fs.statSync(filePath);
-        if (stat.isDirectory()) {
-            let entry = path.posix.join("src/pages", file,file.concat('.js'));
-            page.entry = entry;
-            page.template = path.posix.join("src/pages", file,file.concat('.html'));
-            if(process.env.NODE_ENV === "development"){
-                page.filename = file.concat('.html');
-            }else{
-                page.filename = "../vue-pages/".concat(file,'.html');
-            }
-            // page.filename = file.concat('.html');
-            pages[file] = page;
-        }
-
-    }
-
-    return pages;
-};
-
-const cdnBaseHttp = 'https://cdn.jsdelivr.net/npm';
+let cdnBaseHttp = 'https://cdn.bootcss.com';
 
 let externalConfig = [
     {name : 'vue', scope: 'Vue', js: 'vue.min.js'},
     {name : 'vue-router', scope: 'VueRouter', js: 'vue-router.min.js'},
     {name : 'vuex', scope: 'Vuex', js: 'vuex.min.js'},
-    {name : 'axios', scope: 'axios', js: 'axios.min.js'},
-    // {name : 'axios', scope: 'axios', js: 'axios.min.js', includes:['test']}
+    {name: 'axios', scope: 'axios', js: 'axios.min.js'},
+    {name: 'element-ui', scope: 'ELEMENT', js: 'index.js', css: 'theme-chalk/index.css'},
+    {name: 'echarts', scope: 'echarts', js: 'echarts.min.js', includes : ['contact']},
 ];
 
 let getModulesVersion = () => {
@@ -68,6 +42,7 @@ let getModulesVersion = () => {
     return mvs;
 }
 
+
 let getExternalModules = (config) =>{
     let externals = {};
     let dependencieModules = getModulesVersion();
@@ -75,8 +50,8 @@ let getExternalModules = (config) =>{
         if(item.name in dependencieModules){
             let version = dependencieModules[item.name];
 
-            item.css = item.css && `${cdnBaseHttp}/${item.name}@${version}/${item.css}`;
-            item.js = item.js && `${cdnBaseHttp}/${item.name}@${version}`;
+            item.css = item.css && [cdnBaseHttp, item.name, version, item.css].join('/');
+            item.js = item.js && [cdnBaseHttp, item.name, version, item.js].join('/');
 
             externals[item.name] = item.scope;
         }else{
@@ -93,8 +68,6 @@ let externalModules = getExternalModules(externalConfig);
 console.log("externalConfig ===>",externalConfig);
 
 console.log("externalModules ====>",externalModules);
-
-// let pageConstruction = buildPageSync();
 
 delete require.cache[module.id];
 
@@ -139,6 +112,15 @@ module.exports = function(){
         },
 
         chainWebpack: config => {
+
+            config
+                .plugin(`html`)  //自定义插件名称用于移除
+                .tap(args => [{   //动态修改plugin传参
+                    template: './public/index.html',
+                    cdnConfig : externalConfig,
+                    BASE_URL : '/'
+                }])
+
 
             config.when(
                 process.env.NODE_ENV === 'development',

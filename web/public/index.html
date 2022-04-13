@@ -10,8 +10,12 @@
       <link href="<%= item.css %>" rel="stylesheet" />
     <% }}) %>
 
+    <!-- <script src="http://api.map.baidu.com/api?v=2.0&ak=ysaS1XyN6Ger3cAzcjZgwdjGmsGTQAKG"></script> -->
     <link rel="icon" href="<%= htmlWebpackPlugin.options.BASE_URL %>favicon.ico">
     <title>web</title>
+    <!-- <script src="https://api.map.baidu.com/getscript?v=3.0&amp;ak=ysaS1XyN6Ger3cAzcjZgwdjGmsGTQAKG"></script> -->
+    <script src="http://api.map.baidu.com/api?v=2.0&ak=ysaS1XyN6Ger3cAzcjZgwdjGmsGTQAKG"></script>
+    <!-- <script src="https://api.map.baidu.com/getscript?v=3.0&amp;ak=ysaS1XyN6Ger3cAzcjZgwdjGmsGTQAKG"></script> -->
   </head>
   <body>
     <noscript>
@@ -23,6 +27,8 @@
     <script src=https://cdn.bootcss.com/vuex/3.1.2/vuex.min.js></script>
     <script src=https://cdn.bootcss.com/axios/0.19.0/axios.min.js></script>
     <script src=https://cdn.bootcss.com/element-ui/2.14.1/index.js></script> -->
+
+
 
     <% htmlWebpackPlugin.options.cdnConfig.forEach(function(item){ if(item.js && !htmlWebpackPlugin.options.onlyCss){ %>
       <script type="text/javascript" src="<%= item.js %>"></script>

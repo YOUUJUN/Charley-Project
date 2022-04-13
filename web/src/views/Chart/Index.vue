@@ -10,10 +10,12 @@
 </template>
 
 <script>
-import MapChart from '@components/Charts/Map.vue';
+import LineChart from '@components/Charts/LineChart.vue';
+import MapChart from '@/components/Charts/Map.vue';
 
 export default {
     components : {
+        LineChart,
         MapChart
     }
 
@@ -26,9 +28,13 @@ export default {
 
 <style scoped>
     .chart-container{
-        position: relative;
+        /* position: relative;
         width:100%;
-        height:50rem;
+        height:50rem; */
+        position: absolute;
+        width: 100%;
+        top:0;
+        bottom:0;
     }
 
 </style>

@@ -16,14 +16,17 @@
                 width="400" 
                 trigger="click">
                     
-                    <el-descriptions title="用户信息" direction="vertical" :column="4" border>
+                    <el-descriptions title="用户信息" direction="vertical" :column="3" border>
                         <el-descriptions-item label="用户名">kooriookami</el-descriptions-item>
                         <el-descriptions-item label="手机号">18100000000</el-descriptions-item>
                         <el-descriptions-item label="居住地" :span="2">苏州市</el-descriptions-item>
                         <el-descriptions-item label="备注">
                             <el-tag size="small">学校</el-tag>
                         </el-descriptions-item>
-                        <el-descriptions-item label="联系地址">江苏省苏州市吴中区吴中大道 1188 号</el-descriptions-item>
+                        <el-descriptions-item label="联系地址" :span="2">江苏省苏州市吴中区吴中大道 1188 号</el-descriptions-item>
+                        <el-descriptions-item label="操作面板" :span="3">
+                            <el-button type="primary">编辑</el-button>
+                        </el-descriptions-item>
                     </el-descriptions>
 
                     <el-card
@@ -155,7 +158,7 @@ export default {
 }
 
 .choiced {
-    border: 1px solid red;
+    border: 1px solid #409EFF;
 }
 
 .filler {

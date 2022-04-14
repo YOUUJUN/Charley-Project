@@ -13,10 +13,14 @@
 import LineChart from '@components/Charts/LineChart.vue';
 import MapChart from '@/components/Charts/Map.vue';
 
+import GeoMapChart from '@/components/Charts/Geo.vue';
+// const GeoMapChart = () => import('@components/Charts/Geo.vue');
+
 export default {
     components : {
         LineChart,
-        MapChart
+        MapChart,
+        GeoMapChart
     },
 
     computed : {
@@ -27,6 +31,8 @@ export default {
                 return 'MapChart';
             }else if(query.type && query.type === 'line'){
                 return 'LineChart';
+            }else if(query.type && query.type === 'geo'){
+                return 'GeoMapChart';
             }
             
         }

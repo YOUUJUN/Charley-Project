@@ -3,11 +3,6 @@
 </template>
 
 <script>
-import * as echarts from "echarts";
-import "echarts/extension/bmap/bmap.js";
-// import * as bmap from "echarts/extension/bmap/bmap.js";
-console.log("echarts", echarts);
-
 export default {
     props: {
         data: {
@@ -410,199 +405,149 @@ export default {
             let mapWrap = this.$refs["chart-wrap"];
             this.chart = echarts.init(mapWrap);
 
-            let option = {
-                title: {
-                    text: "全国主要城市空气质量 - 百度地图",
-                    subtext: "data from PM25.in",
-                    sublink: "http://www.pm25.in",
-                    left: "center",
-                },
-                tooltip: {
-                    trigger: "item",
-                },
-                bmap: {
-                    center: [104.114129, 37.550339],
-                    zoom: 5,
-                    roam: true,
-                    mapStyle: {
-                        styleJson: [
-                            {
-                                featureType: "water",
-                                elementType: "all",
-                                stylers: {
-                                    color: "#d1d1d1",
-                                },
-                            },
-                            {
-                                featureType: "land",
-                                elementType: "all",
-                                stylers: {
-                                    color: "#f3f3f3",
-                                },
-                            },
-                            {
-                                featureType: "railway",
-                                elementType: "all",
-                                stylers: {
-                                    visibility: "off",
-                                },
-                            },
-                            {
-                                featureType: "highway",
-                                elementType: "all",
-                                stylers: {
-                                    color: "#fdfdfd",
-                                },
-                            },
-                            {
-                                featureType: "highway",
-                                elementType: "labels",
-                                stylers: {
-                                    visibility: "off",
-                                },
-                            },
-                            {
-                                featureType: "arterial",
-                                elementType: "geometry",
-                                stylers: {
-                                    color: "#fefefe",
-                                },
-                            },
-                            {
-                                featureType: "arterial",
-                                elementType: "geometry.fill",
-                                stylers: {
-                                    color: "#fefefe",
-                                },
-                            },
-                            {
-                                featureType: "poi",
-                                elementType: "all",
-                                stylers: {
-                                    visibility: "off",
-                                },
-                            },
-                            {
-                                featureType: "green",
-                                elementType: "all",
-                                stylers: {
-                                    visibility: "off",
-                                },
-                            },
-                            {
-                                featureType: "subway",
-                                elementType: "all",
-                                stylers: {
-                                    visibility: "off",
-                                },
-                            },
-                            {
-                                featureType: "manmade",
-                                elementType: "all",
-                                stylers: {
-                                    color: "#d1d1d1",
-                                },
-                            },
-                            {
-                                featureType: "local",
-                                elementType: "all",
-                                stylers: {
-                                    color: "#d1d1d1",
-                                },
-                            },
-                            {
-                                featureType: "arterial",
-                                elementType: "labels",
-                                stylers: {
-                                    visibility: "off",
-                                },
-                            },
-                            {
-                                featureType: "boundary",
-                                elementType: "all",
-                                stylers: {
-                                    color: "#fefefe",
-                                },
-                            },
-                            {
-                                featureType: "building",
-                                elementType: "all",
-                                stylers: {
-                                    color: "#d1d1d1",
-                                },
-                            },
-                            {
-                                featureType: "label",
-                                elementType: "labels.text.fill",
-                                stylers: {
-                                    color: "#999999",
-                                },
-                            },
-                        ],
-                    },
-                },
-                series: [
-                    {
-                        name: "pm2.5",
-                        type: "scatter",
-                        coordinateSystem: "bmap",
-                        data: this.convertData(this.data),
-                        symbolSize: function (val) {
-                            return val[2] / 10;
-                        },
-                        encode: {
-                            value: 2,
-                        },
-                        label: {
-                            formatter: "{b}",
-                            position: "right",
-                            show: false,
-                        },
-                        emphasis: {
-                            label: {
-                                show: true,
-                            },
-                        },
-                    },
-                    {
-                        name: "Top 5",
-                        type: "effectScatter",
-                        coordinateSystem: "bmap",
-                        data: this.convertData(
-                            this.data
-                                .sort(function (a, b) {
-                                    return b.value - a.value;
-                                })
-                                .slice(0, 6)
-                        ),
-                        symbolSize: function (val) {
-                            return val[2] / 10;
-                        },
-                        encode: {
-                            value: 2,
-                        },
-                        showEffectOn: "render",
-                        rippleEffect: {
-                            brushType: "stroke",
-                        },
-                        label: {
-                            formatter: "{b}",
-                            position: "right",
-                            show: true,
-                        },
-                        itemStyle: {
-                            shadowBlur: 10,
-                            shadowColor: "#333",
-                        },
-                        emphasis: {
-                            scale: true,
-                        },
-                        zlevel: 1,
-                    },
-                ],
-            };
+            // https://geo.datav.aliyun.com/areas_v3/bound/340000_full.json
 
-            option && this.chart.setOption(option);
+            let vm = this;
+
+            this.chart.showLoading();
+            this.$request
+                .get(
+                    `https://geo.datav.aliyun.com/areas_v3/bound/340000_full.json`,
+                    {
+                        withCredentials: false,
+                    }
+                )
+                .then((res) => {
+                    console.log("res", res);
+
+                    this.chart.hideLoading();
+                    // echarts.registerMap("济南", res.data); //#2
+
+                    echarts.registerMap("AH", res.data);
+                    this.chart.setOption({
+                            title: {
+                                text: "安徽地级市",
+                                subtext: "Just Test",
+                                sublink:
+                                    "http://zh.wikipedia.org/wiki/%E9%A6%99%E6%B8%AF%E8%A1%8C%E6%94%BF%E5%8D%80%E5%8A%83#cite_note-12",
+                            },
+                            tooltip: {
+                                trigger: "item",
+                                formatter: "{b}<br/>{c} (p / km2)",
+                            },
+                            toolbox: {
+                                show: true,
+                                orient: "vertical",
+                                left: "right",
+                                top: "center",
+                                feature: {
+                                    dataView: { readOnly: false },
+                                    restore: {},
+                                    saveAsImage: {},
+                                },
+                            },
+                            visualMap: {
+                                min: 800,
+                                max: 50000,
+                                text: ["High", "Low"],
+                                realtime: false,
+                                calculable: true,
+                                inRange: {
+                                    color: [
+                                        "lightskyblue",
+                                        "yellow",
+                                        "orangered",
+                                    ],
+                                },
+                            },
+                            series: [
+                                {
+                                    name: "安徽",
+                                    type: "map",
+                                    map: "AH",
+                                    label: {
+                                        show: true,
+                                    },
+                                    data: [
+                                        { name: "中西区", value: 20057.34 },
+                                        { name: "湾仔", value: 15477.48 },
+                                        { name: "东区", value: 31686.1 },
+                                        { name: "南区", value: 6992.6 },
+                                        { name: "油尖旺", value: 44045.49 },
+                                        { name: "深水埗", value: 40689.64 },
+                                        { name: "九龙城", value: 37659.78 },
+                                        { name: "黄大仙", value: 45180.97 },
+                                        { name: "观塘", value: 55204.26 },
+                                        { name: "葵青", value: 21900.9 },
+                                        { name: "荃湾", value: 4918.26 },
+                                        { name: "屯门", value: 5881.84 },
+                                        { name: "元朗", value: 4178.01 },
+                                        { name: "北区", value: 2227.92 },
+                                        { name: "大埔", value: 2180.98 },
+                                        { name: "沙田", value: 9172.94 },
+                                        { name: "西贡", value: 3368 },
+                                        { name: "离岛", value: 806.98 },
+                                    ],
+                                    // 自定义名称映射
+                                    nameMap: {
+                                        "Central and Western": "中西区",
+                                        Eastern: "东区",
+                                        Islands: "离岛",
+                                        "Kowloon City": "九龙城",
+                                        "Kwai Tsing": "葵青",
+                                        "Kwun Tong": "观塘",
+                                        North: "北区",
+                                        "Sai Kung": "西贡",
+                                        "Sha Tin": "沙田",
+                                        "Sham Shui Po": "深水埗",
+                                        Southern: "南区",
+                                        "Tai Po": "大埔",
+                                        "Tsuen Wan": "荃湾",
+                                        "Tuen Mun": "屯门",
+                                        "Wan Chai": "湾仔",
+                                        "Wong Tai Sin": "黄大仙",
+                                        "Yau Tsim Mong": "油尖旺",
+                                        "Yuen Long": "元朗",
+                                    },
+                                },
+                            ],
+                        })
+                    
+                    // let option = {
+                    //     series: [
+                    //         {
+                    //             name: "济南地图",
+                    //             type: "map",
+                    //             mapType: "济南", //#3
+                    //             itemStyle: {
+                    //                 normal: {
+                    //                     label: { show: true },
+                    //                     areaStyle: {
+                    //                         color: "#CCFFFF",
+                    //                     },
+                    //                 },
+                    //                 emphasis: {
+                    //                     label: { show: true },
+                    //                     areaStyle: {
+                    //                         color: "#CCFFFF",
+                    //                     },
+                    //                 },
+                    //             },
+                    //             data: [
+                    //                 {
+                    //                     name: "历下区",
+                    //                     value: 100,
+                    //                     selected: true,
+                    //                 },
+                    //             ], //地图数据。name对应geo.json中的name,
+                    //             nameMap: { 历下区: "历下区" }, //更改地图中的name 名称
+                    //         },
+                    //     ],
+                    // };
+                    // this.chart.setOption(option);
+                });
+
+            // option && this.chart.setOption(option);
         },
 
         convertData(data) {
@@ -618,7 +563,6 @@ export default {
             }
             return res;
         },
-        
     },
 };
 </script>
@@ -630,6 +574,6 @@ export default {
 .chart {
     width: 100%;
     /* height: 50rem; */
-    height:100%;
+    height: 100%;
 }
 </style>

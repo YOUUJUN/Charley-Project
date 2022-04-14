@@ -41,6 +41,9 @@
             <el-menu-item index="5-1" @click="$router.push({path : '/Charts', query : {type: 'map'}})">
                 <span slot="title">地图</span>
             </el-menu-item>
+            <el-menu-item index="5-2" @click="$router.push({path : '/Charts', query : {type: 'geo'}})">
+                <span slot="title">geoJson地图</span>
+            </el-menu-item>
             <el-menu-item index="5-2" @click="$router.push({path : '/Charts', query : {type: 'line'}})">
                 <span slot="title">折线图</span>
             </el-menu-item>

@@ -402,6 +402,16 @@ export default {
     },
 
     mounted() {
+        console.log(
+            "this.convertData(this.data)",
+            this.convertData(
+                this.data
+                    .sort(function (a, b) {
+                        return b.value - a.value;
+                    })
+                    .slice(0, 6)
+            )
+        );
         this.initChart();
     },
 
@@ -564,6 +574,35 @@ export default {
                             },
                         },
                     },
+
+                    // {
+                    //     name : "pm2.5",
+                    //     type : 'scatter',
+                    //     coordinateSystem : 'bmap',
+                    //     data : [
+                    //         {
+                    //             name : '合肥',
+                    //             value : [117.27, 31.86, 229]
+                    //         }
+                    //     ],
+                    //     symbolSize: function (val) {
+                    //         return 10;
+                    //     },
+                    //     encode: {
+                    //         value: 2,
+                    //     },
+                    //     label: {
+                    //         formatter: "{b}",
+                    //         position: "right",
+                    //         show: false,
+                    //     },
+                    //     emphasis: {
+                    //         label: {
+                    //             show: true,
+                    //         },
+                    //     },
+                    // }
+
                     {
                         name: "Top 5",
                         type: "effectScatter",
@@ -599,6 +638,7 @@ export default {
                         },
                         zlevel: 1,
                     },
+
                 ],
             };
 
@@ -618,7 +658,6 @@ export default {
             }
             return res;
         },
-        
     },
 };
 </script>
@@ -630,6 +669,6 @@ export default {
 .chart {
     width: 100%;
     /* height: 50rem; */
-    height:100%;
+    height: 100%;
 }
 </style>

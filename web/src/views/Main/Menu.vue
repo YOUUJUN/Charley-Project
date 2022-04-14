@@ -35,10 +35,17 @@
             <i class="el-icon-setting"></i>
             <span slot="title">宫格展示</span>
         </el-menu-item>
-        <el-menu-item index="5" @click="$router.push({path : '/Charts'})">
-            <i class="el-icon-setting"></i>
-            <span slot="title">ECharts图表</span>
-        </el-menu-item>
+        <el-submenu :index="5" popper-append-to-body="true">
+            <template slot="title"><i class="el-icon-setting"></i>
+                <span slot="title">ECharts图表</span></template>
+            <el-menu-item index="5-1" @click="$router.push({path : '/Charts', query : {type: 'map'}})">
+                <span slot="title">地图</span>
+            </el-menu-item>
+            <el-menu-item index="5-2" @click="$router.push({path : '/Charts', query : {type: 'line'}})">
+                <span slot="title">折线图</span>
+            </el-menu-item>
+        </el-submenu>
+        
         
 
     </el-menu>

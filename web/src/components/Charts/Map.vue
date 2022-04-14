@@ -546,6 +546,7 @@ export default {
                         name: "pm2.5",
                         type: "scatter",
                         coordinateSystem: "bmap",
+                        map : "安徽",
                         data: this.convertData(this.data),
                         symbolSize: function (val) {
                             return val[2] / 10;
@@ -618,36 +619,7 @@ export default {
             }
             return res;
         },
-        renderItem(params, api) {
-            console.log("api", api);
-            var coords = [
-                [116.7, 39.53],
-                [103.73, 36.03],
-                [112.91, 27.87],
-                [120.65, 28.01],
-                [119.57, 39.95],
-            ];
-            var points = [];
-            for (var i = 0; i < coords.length; i++) {
-                points.push(api.coord(coords[i]));
-            }
-            var color = api.visual("color");
-            return {
-                type: "polygon",
-                shape: {
-                    points: echarts.graphic.clipPointsByRect(points, {
-                        x: params.coordSys.x,
-                        y: params.coordSys.y,
-                        width: params.coordSys.width,
-                        height: params.coordSys.height,
-                    }),
-                },
-                style: api.style({
-                    fill: color,
-                    stroke: echarts.color.lift(color),
-                }),
-            };
-        },
+        
     },
 };
 </script>

@@ -1,7 +1,7 @@
 <template>
   
     <div class="chart-container">
-        <component is="MapChart"></component>
+        <component :is="dyncChart"></component>
 
         <!-- <map-chart height="100%" width="100%" ></map-chart> -->
 
@@ -17,6 +17,23 @@ export default {
     components : {
         LineChart,
         MapChart
+    },
+
+    computed : {
+        dyncChart (){
+            console.log('$route', this.$route);
+            let query = this.$route.query;
+            if(!query.type || query.type === 'map'){
+                return 'MapChart';
+            }else if(query.type && query.type === 'line'){
+                return 'LineChart';
+            }
+            
+        }
+    },
+
+    created(){
+
     }
 
 }

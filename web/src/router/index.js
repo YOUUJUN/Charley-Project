@@ -2,23 +2,41 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 
 import Layout from "@components/Layout/Layout.vue";
+import Menu from "@views/Main/Menu.vue";
 
 Vue.use(VueRouter);
 
 export const constantRoutes = [
+
+    // {
+    //     path: '/404',
+    //     component: () => import('@/views/Error/404.vue'),
+    // },
+
     {
         path: "/",
-        name: "Layout",
         redirect: "/Main",
+        name: "Index",
+        meta : {
+            title : "首页"
+        }
+    },
+
+    {
+        path: "/Main",
+        redirect: "/Main/list",
         component: Layout,
+        meta : {
+            title : "用户展示"
+        },
         children: [
 			{
-				path : "Main",
-				name : "Main",
+				path : "list",
+				name : "userList",
 				components : {
                     default : () => import('@views/Main/Index.vue'),
                     navCtrl : () => import('@views/Main/Ctrl.vue'),
-                    sideMenu : () => import('@views/Main/Menu.vue'),
+                    sideMenu : Menu,
                 },
                 meta : {
                     title : "用户列表"
@@ -26,19 +44,41 @@ export const constantRoutes = [
 			},
 
             {
-                path : "Charts",
-                name : "Charts",
+                path : "Info",
+                name : "userInfo",
                 components : {
-                    default : () => import('@views/Chart/Index.vue'),
-                    navCtrl : () => import('@views/Main/Ctrl.vue'),
-                    sideMenu : () => import('@views/Main/Menu.vue'),
+                    default : () => import('@views/Main/Detail.vue'),
+                    sideMenu : Menu,
                 },
                 meta : {
-                    title : "ECharts图表"
+                    title : "用户信息"
                 },
             }
-		],
+            
+		]
     },
+
+
+
+    {
+        path : "/Charts",
+        name : "Charts",
+        component: Layout,
+        children : [
+            {
+                path : '',
+                components : {
+                    default : () => import('@views/Chart/Index.vue'),
+                    sideMenu : Menu,
+                }
+            }
+        ],
+        meta : {
+            title : "ECharts图表"
+        },
+    },
+
+    
 
 
     // {

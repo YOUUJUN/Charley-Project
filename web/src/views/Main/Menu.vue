@@ -34,7 +34,7 @@
         </el-menu-item>
         <el-menu-item index="4" @click="$router.push({path : '/Main'})">
             <i class="el-icon-setting"></i>
-            <span slot="title">用户列表</span>
+            <span slot="title">用户展示</span>
         </el-menu-item>
         <el-submenu :index="5" popper-append-to-body="true">
             <template slot="title"><i class="el-icon-setting"></i>

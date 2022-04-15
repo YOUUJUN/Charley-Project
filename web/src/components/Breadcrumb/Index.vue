@@ -3,8 +3,8 @@
 
         <!-- <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item> -->
         <el-breadcrumb-item v-for="(item, index) in navList" :key="item.path">
-            <span v-if="index==navList.length-1">{{item.meta.title}}</span>
-            <a v-else href="/" @click="handleLink(item)">{{item.meta.title}}</a>
+            <span v-if="item.redirect==='noRedirect' || index==navList.length-1">{{item.meta.title}}</span>
+            <a v-else @click="handleLink(item)">{{item.meta.title}}</a>
         </el-breadcrumb-item>
     </el-breadcrumb>
 </template>
@@ -36,16 +36,25 @@ export default {
 
         getBreadcrumb (){
             let matched = this.$route.matched.filter( route => route.meta && route.meta.title);
-            matched = [{ path: '/Main', meta: { title: '首页' }}].concat(matched);
+            console.log('matched1', matched);
+            matched = [{ path: '/', meta: { title: '首页' }}].concat(matched);
 
-            console.log('matched', matched);
+            console.log('matched2', matched);
 
             this.navList = matched;
         },
 
 
         handleLink(item){
-            this.$router.push(item.path);
+            // console.log('item', item);
+            // this.$router.push(item.path);
+
+            const { redirect, path } = item
+            if (redirect) {
+                this.$router.push(redirect).catch(err=>{});
+                return
+            }
+            this.$router.push(path).catch(err=>{});
         }
 
     }

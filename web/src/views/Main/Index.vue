@@ -25,7 +25,7 @@
                         </el-descriptions-item>
                         <el-descriptions-item label="联系地址" :span="2">江苏省苏州市吴中区吴中大道 1188 号</el-descriptions-item>
                         <el-descriptions-item label="操作面板" :span="3">
-                            <el-button type="primary">编辑</el-button>
+                            <el-button type="primary" @click="$router.push({path : '/Main/Info'}).catch(err=>{})">编辑</el-button>
                         </el-descriptions-item>
                     </el-descriptions>
 

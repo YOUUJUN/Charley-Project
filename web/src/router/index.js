@@ -21,7 +21,7 @@ export const constantRoutes = [
                     sideMenu : () => import('@views/Main/Menu.vue'),
                 },
                 meta : {
-                    title : "宫格布局"
+                    title : "用户列表"
                 },
 			},
 

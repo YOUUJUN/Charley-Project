@@ -25,7 +25,7 @@
             <div class="avatar-wrap">
                 <el-dropdown>
                 <span class="el-dropdown-link">
-                    <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+                    <el-avatar src="/images/me.jpg"></el-avatar>
                     <i class="el-icon-caret-bottom" />
                 </span>
                 <el-dropdown-menu slot="dropdown">

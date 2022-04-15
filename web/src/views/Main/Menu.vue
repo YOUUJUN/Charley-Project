@@ -2,6 +2,7 @@
     <el-menu
         default-active="2"
         unique-opened="true"
+        :collapse="sidebar.opened"
         class="menu"
         @open="handleOpen"
         @close="handleClose"
@@ -55,7 +56,7 @@
 </template>
 
 <script>
-import {mapActions} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 
 export default {
 
@@ -66,6 +67,10 @@ export default {
     },
 
     computed: {
+        ...mapGetters([
+            'sidebar'
+        ]),
+
         menuData() {
             return this.originData.housings;
         },
@@ -79,7 +84,7 @@ export default {
 
     methods: {
         ...mapActions('display', [
-            'getUserInfo'
+            'initUserInfo'
         ]),
 
         openFloor(code){
@@ -90,7 +95,7 @@ export default {
                 age : 90
             })
             
-            let result = this.getUserInfo(payload);
+            let result = this.initUserInfo(payload);
             console.log('result', result);
         },
 

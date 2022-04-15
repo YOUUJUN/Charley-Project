@@ -6,7 +6,7 @@
 
         <el-container class="main-wrap">
             
-            <el-aside class="aside-wrap" width="">
+            <el-aside class="aside-wrap" :width="sidebar.width">
                 <div class="aside">
                     <el-scrollbar style="height: 100%;">
                     <side-bar></side-bar>
@@ -33,12 +33,20 @@
 const SideBar = () => import('./Parts/SideBar.vue')
 const NavBar = () => import('./Parts/NavBar.vue')
 
+import {mapGetters} from "vuex";
+
 export default {
     name: "Layout",
 
     components : {
         SideBar,
         NavBar
+    },
+
+    computed : {
+        ...mapGetters([
+            'sidebar'
+        ])
     },
 
     methods: {},
@@ -64,8 +72,9 @@ export default {
 	}
 
     .content-wrap, .aside-wrap{
-        width:24rem !important;
+        /* width:24rem !important; */
         position: relative;
+        transition:width .3s;
     }
 
     .content, .aside{

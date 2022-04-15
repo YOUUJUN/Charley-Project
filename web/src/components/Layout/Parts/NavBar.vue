@@ -6,8 +6,9 @@
         <section class="center">
 
             <div class="bread-wrap">
+                <hamburger :is-active="sidebar.opened" @toggleClick="toggleClick"></hamburger>
 
-                <breadcrumb></breadcrumb>
+                <breadcrumb class="bread-nav"></breadcrumb>
 
             </div>
 
@@ -43,13 +44,36 @@
 <script>
 
 const breadcrumb = () => import('@/components/Breadcrumb/Index.vue');
+const hamburger = () => import('@/components/Hamburger/Index.vue');
+
+import {mapGetters, mapActions} from "vuex";
 
 export default {
     name : 'NavBar',
     
     components : {
-        breadcrumb
+        breadcrumb,
+        hamburger
+    },
+
+    computed : {
+        ...mapGetters([
+            'sidebar'
+        ])
+    },
+
+    methods : {
+
+        ...mapActions('display',[
+            'toggleSideBar'
+        ]),
+
+        toggleClick(){
+            this.toggleSideBar();
+        }
+
     }
+
 
 }
 </script>
@@ -83,7 +107,17 @@ export default {
         justify-content: space-between;
         align-items: center;
         flex:auto;
-        margin:0 7.5rem;
+        margin-right: 7.5rem;
+    }
+
+    .bread-wrap{
+        display:flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .bread-nav{
+        margin-left:1.5rem;
     }
 
     .ctrl-wrap{

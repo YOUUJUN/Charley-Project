@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapActions } from 'vuex'
 
 export default {
     data(){
@@ -36,7 +36,7 @@ export default {
 
     methods : {
 
-        ...mapMutations('display', [
+        ...mapActions('display', [
             'changeDisplayRow'
         ])
     }

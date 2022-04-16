@@ -5,14 +5,15 @@ import store from './store'
 import Request from '@/utils/http.js'
 
 
-import {Container, Scrollbar, Avatar, Card} from 'element-ui';
+import {Container, Scrollbar, Avatar, Card, PageHeader} from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 
 const components = [
   Container,
   Scrollbar,
   Avatar,
-  Card
+  Card,
+  PageHeader
 ];
 
 components.forEach((component) => {

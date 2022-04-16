@@ -137,7 +137,7 @@ export default {
     flex-direction: column;
     flex-wrap: nowrap;
     background: #fff;
-    box-shadow: -1px -1px 5px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: -.1rem -.1rem .5rem 0 rgba(0, 0, 0, 0.1);
     margin: 1.5rem;
     padding: 1rem;
     overflow: auto;

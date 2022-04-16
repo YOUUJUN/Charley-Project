@@ -45,7 +45,7 @@
             <el-menu-item index="5-2" @click="$router.push({path : '/Charts', query : {type: 'geo'}})">
                 <span slot="title">geoJson地图</span>
             </el-menu-item>
-            <el-menu-item index="5-2" @click="$router.push({path : '/Charts', query : {type: 'line'}})">
+            <el-menu-item index="5-3" @click="$router.push({path : '/Charts', query : {type: 'line'}})">
                 <span slot="title">折线图</span>
             </el-menu-item>
         </el-submenu>
@@ -56,6 +56,7 @@
 </template>
 
 <script>
+import {Message} from "element-ui";
 import {mapActions, mapGetters} from "vuex";
 
 export default {
@@ -97,6 +98,11 @@ export default {
             
             let result = this.initUserInfo(payload);
             console.log('result', result);
+
+            Message({
+                message: code,
+                type: 'warning'
+            });
         },
 
         initData() {

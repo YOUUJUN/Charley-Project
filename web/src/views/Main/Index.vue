@@ -55,6 +55,7 @@
 </template>
 
 <script>
+import {Message} from "element-ui";
 import { mapState } from "vuex";
 
 export default {
@@ -114,6 +115,10 @@ export default {
         setSelected(index1, index2) {
             this.selected = `${index1}#${index2}`;
             console.log("this.selected", this.selected);
+            Message({
+                message : this.selected,
+                type : "worning"
+            })
         },
 
         doSelected(index1, index2) {

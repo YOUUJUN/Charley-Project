@@ -27,14 +27,23 @@
                 <el-button @click="resetForm">Reset</el-button>
             </el-form>
 
+            <div class="chart-wrap">
+
+                <component class="chart" is="lineChart"></component>
+
+                <component class="chart" is="lineChart"></component>
+
+            </div>
+
         </div>
     </section>
 </template>
 
 <script>
-import App from "../../App.vue";
+const lineChart = () => import('@components/Charts/LineChart.vue');
+
 export default {
-    components: { App },
+    components: { lineChart },
     data() {
         return {
             ruleForm: {
@@ -122,6 +131,20 @@ export default {
 
     /deep/ .user-panel .el-button{
         width: 7.8rem;
+    }
+
+
+
+    /*------charts------*/
+    .chart-wrap{
+        display: flex;
+        flex-direction: row;
+        height:40rem;
+    }
+
+    .chart-wrap .chart{
+        flex:auto;
+        height: 100%;
     }
 
 </style>

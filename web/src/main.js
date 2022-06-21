@@ -27,6 +27,8 @@ Vue.use(ElementUI);
 
 import * as THREE from 'three';
 
+global.THREE = THREE;
+
 
 
 Vue.config.productionTip = false;

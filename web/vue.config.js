@@ -112,7 +112,7 @@ module.exports = function(){
                 // })
             ],
 
-            externals : externalModules,
+            // externals : externalModules,
 
             resolve : {
                 alias : {

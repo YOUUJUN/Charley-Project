@@ -1,11 +1,11 @@
 <template>
     <el-menu
         default-active="2"
-        unique-opened="true"
+        :unique-opened="true"
         :collapse="sidebar.opened"
         class="menu"
-        @open="handleOpen"
-        @close="handleClose"
+        @open=""
+        @close=""
     >
         <template v-for="(housing, index) in menuData">
             <el-submenu :index="housing.code">
@@ -15,7 +15,7 @@
                 </template>
 
                 <template v-for="(building, index) in housing.buildings">
-                    <el-submenu :index="housing.code + building.code" popper-append-to-body="true">
+                    <el-submenu :index="housing.code + building.code" :popper-append-to-body="true">
                         <template slot="title">{{building.name}}</template>
 
                         <template v-for="(floor, index) in building.floors">
@@ -36,7 +36,7 @@
             <i class="el-icon-setting"></i>
             <span slot="title">用户展示</span>
         </el-menu-item>
-        <el-submenu :index="5" popper-append-to-body="true">
+        <el-submenu index="5" :popper-append-to-body="true">
             <template slot="title"><i class="el-icon-setting"></i>
                 <span slot="title">ECharts图表</span></template>
             <el-menu-item index="5-1" @click="$router.push({path : '/Charts', query : {type: 'map'}})">
@@ -49,6 +49,11 @@
                 <span slot="title">折线图</span>
             </el-menu-item>
         </el-submenu>
+
+        <el-menu-item index="6" @click="$router.push({path : '/Three'})">
+            <i class="el-icon-setting"></i>
+            <span slot="title">Three.js测试</span>
+        </el-menu-item>
         
         
 

@@ -78,6 +78,24 @@ export const constantRoutes = [
         },
     },
 
+    {
+        path : "/Three",
+        name : "Three",
+        component: Layout,
+        children : [
+            {
+                path : '',
+                components : {
+                    default : () => import('@views/Three/Index.vue'),
+                    sideMenu : Menu,
+                }
+            }
+        ],
+        meta : {
+            title : "Three测试"
+        },
+    },
+
     
 
 

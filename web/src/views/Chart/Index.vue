@@ -12,6 +12,8 @@
 <script>
 import LineChart from '@components/Charts/LineChart.vue';
 import MapChart from '@/components/Charts/Map.vue';
+import BMapChart from '@/components/Charts/BMap.vue';
+import AMapChart from '@/components/Charts/AMap.vue';
 
 import GeoMapChart from '@/components/Charts/Geo.vue';
 // const GeoMapChart = () => import('@components/Charts/Geo.vue');
@@ -20,6 +22,8 @@ export default {
     components : {
         LineChart,
         MapChart,
+        BMapChart,
+        AMapChart,
         GeoMapChart
     },
 
@@ -29,6 +33,10 @@ export default {
             let query = this.$route.query;
             if(!query.type || query.type === 'map'){
                 return 'MapChart';
+            }else if(query.type && query.type === 'bmap'){
+                return 'BMapChart';
+            }else if(query.type && query.type === 'amap'){
+                return 'AMapChart';
             }else if(query.type && query.type === 'line'){
                 return 'LineChart';
             }else if(query.type && query.type === 'geo'){

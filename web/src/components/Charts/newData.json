@@ -1,0 +1,193 @@
+{
+    "nodes": [
+        {
+            "id": "0",
+            "name": "服务商",
+            "symbolSize": 18,
+            "x": 0.82776,
+            "y": 299.6904,
+            "value": [117.296825,31.804486],
+            "category": 0
+        },
+        {
+            "id": "1",
+            "name": "老人1",
+            "symbolSize": 10,
+            "x": -418.08344,
+            "y": 446.8853,
+            "value": [108.968311,34.329368],
+            "category": 0
+        },
+        {
+            "id": "2",
+            "name": "MlleBaptistine",
+            "symbolSize": 10,
+            "x": -212.76357,
+            "y": 245.29176,
+            "value": [117.338938,31.721347],
+            "category": 1
+        },
+        {
+            "id": "3",
+            "name": "MmeMagloire",
+            "symbolSize": 10,
+            "x": 0.82404,
+            "y": 235.26283,
+            "value": [117.129669,31.813201],
+            "category": 1
+        },
+        {
+            "id": "4",
+            "name": "CountessDeLo",
+            "symbolSize": 10,
+            "x": 0.30386,
+            "y": 429.06424,
+            "value": [117.276272,31.91379],
+            "category": 0
+        },
+
+
+        {
+            "id": "5",
+            "name": "Geborand",
+            "symbolSize": 10,
+            "x": -417.26337,
+            "y": 406.03506,
+            "value": [117.415977,31.85345],
+            "category": 0
+        },
+        {
+            "id": "20",
+            "name": "Geborand2",
+            "symbolSize": 10,
+            "x": -417.26337,
+            "y": 406.03506,
+            "value": [117.415111, 31.85345],
+            "category": 0
+        },
+        {
+            "id": "21",
+            "name": "Geborand3",
+            "symbolSize": 10,
+            "x": -417.26337,
+            "y": 406.03506,
+            "value": [117.415977, 31.85001],
+            "category": 0
+        },
+        {
+            "id": "22",
+            "name": "Geborand4",
+            "symbolSize": 10,
+            "x": -417.26337,
+            "y": 406.03506,
+            "value": [117.415165, 31.85523],
+            "category": 0
+        },
+
+
+
+
+
+        {
+            "id": "6",
+            "name": "Champtercier",
+            "symbolSize": 10,
+            "x": -332.6012,
+            "y": 485.16974,
+            "value": [117.414827,31.762127],
+            "category": 0
+        },
+        {
+            "id": "7",
+            "name": "Cravatte",
+            "symbolSize": 10,
+            "x": -382.69568,
+            "y": 475.09113,
+            "value": [117.175087,31.903],
+            "category": 0
+        },
+        {
+            "id": "8",
+            "name": "Count",
+            "symbolSize": 10,
+            "x": -320.384,
+            "y": 387.17325,
+            "value": [117.22108,31.832346],
+            "category": 0
+        },
+        {
+            "id": "9",
+            "name": "OldMan",
+            "symbolSize": 10,
+            "x": -344.39832,
+            "y": 451.16772,
+            "value": [117.180261,31.695297],
+            "category": 0
+        },
+        {
+            "id": "10",
+            "name": "Labarre",
+            "symbolSize": 10,
+            "x": -89.34107,
+            "y": 234.56128,
+            "value": [117.35676,31.838236],
+            "category": 1
+        },
+        {
+            "id": "11",
+            "name": "Valjean",
+            "symbolSize": 10,
+            "x": -87.93029,
+            "y": -6.8120565,
+            "value": [117.05263,31.839708],
+            "category": 1
+        }
+    ],
+    "links": [
+        {
+            "source": "1",
+            "target": "0"
+        },
+        {
+            "source": "2",
+            "target": "0"
+        },
+        {
+            "source": "3",
+            "target": "0"
+        },
+        {
+            "source": "4",
+            "target": "0"
+        },
+        {
+            "source": "5",
+            "target": "0"
+        },
+        {
+            "source": "6",
+            "target": "0"
+        },
+        {
+            "source": "7",
+            "target": "0"
+        },
+        {
+            "source": "8",
+            "target": "0"
+        },
+        {
+            "source": "9",
+            "target": "0"
+        },
+        {
+            "source": "11",
+            "target": "0"
+        }
+    ],
+    "categories": [
+        {
+            "name": "A"
+        }
+    ]
+}

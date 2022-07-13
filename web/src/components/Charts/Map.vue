@@ -1,5 +1,5 @@
 <template>
-    <div class="chart" ref="chart-wrap"></div>
+    <div class="chart" ref="chart-wrap" id="chart-wrap"></div>
 </template>
 
 <script>
@@ -8,7 +8,152 @@ import "echarts/extension/bmap/bmap.js";
 // import * as bmap from "echarts/extension/bmap/bmap.js";
 console.log("echarts", echarts);
 
+const json = import("./data.json");
+
+function renderItem(params, api) {
+    var coords = [
+        [116.7, 39.53],
+        [103.73, 36.03],
+        [112.91, 27.87],
+        [120.65, 28.01],
+        [119.57, 39.95],
+    ];
+    var points = [];
+    for (var i = 0; i < coords.length; i++) {
+        points.push(api.coord(coords[i]));
+    }
+    var color = api.visual("color");
+    return {
+        type: "polygon",
+        shape: {
+            points: echarts.graphic.clipPointsByRect(points, {
+                x: params.coordSys.x,
+                y: params.coordSys.y,
+                width: params.coordSys.width,
+                height: params.coordSys.height,
+            }),
+        },
+        style: api.style({
+            fill: color,
+            stroke: echarts.color.lift(color),
+        }),
+    };
+}
+
+function getData(point) {
+    var A = point[0],
+        B = point[1],
+        n = 30,
+        arc = Math.PI / 4,
+        points = [];
+
+    function getCircleRadio(A, B, arc) {
+        return (
+            Math.sqrt(Math.pow(B[0] - A[0], 2) + Math.pow(B[1] - A[1], 2)) /
+            (2 * Math.sin(arc / 2))
+        );
+    }
+
+    function getCircleOrigin(A, B, r) {
+        var x0 = 0,
+            y0 = 0;
+        if (A[0] == B[0]) {
+            x0 = A[0] - Math.sqrt(r * r - Math.pow(B[1] - A[1] / 2, 2));
+            y0 = (A[1] + B[1]) / 2;
+        } else if (A[1] == B[1]) {
+            x0 = (A[0] + B[0]) / 2;
+            y0 = A[1] + Math.sqrt(r * r - Math.pow(B[0] - A[0] / 2, 2));
+        } else {
+            var M = [(A[0] + B[0]) / 2, (A[1] + B[1]) / 2],
+                k = (A[0] - B[0]) / (B[1] - A[1]),
+                a = 1.0 + k * k,
+                b = -2 * M[0] - k * k * (A[0] + B[0]),
+                c =
+                    M[0] * M[0] +
+                    (k * k * (A[0] + B[0]) * (A[0] + B[0])) / 4.0 -
+                    (r * r -
+                        ((M[0] - A[0]) * (M[0] - A[0]) +
+                            (M[1] - A[1]) * (M[1] - A[1])));
+            x0 = (-1.0 * b - Math.sqrt(b * b - 4 * a * c)) / (2 * a);
+            y0 = k * x0 - k * M[0] + M[1];
+        }
+        return [x0, y0];
+    }
+    var R = getCircleRadio(A, B, arc);
+    var Ori = getCircleOrigin(A, B, R);
+    for (var i = 0; i < n; i++) {
+        var angl = (arc * i) / n,
+            arc0 = Math.asin((A[0] - Ori[0]) / R);
+        var x = Ori[0] + Math.sin(arc0 + angl) * R;
+        var y = Ori[1] + Math.cos(arc0 + angl) * R;
+        points.push([x, y]);
+    }
+    return points;
+}
+
+console.log(
+    "coord",
+    getData([
+        [116.4383, 40.1471],
+        [120.5383, 23.1471],
+    ])
+);
+
+var busLines = [
+    {
+        coords: getData([
+            [116.4383, 40.1471],
+            [120.5383, 23.1471],
+        ]),
+        lineStyle: {
+            normal: {
+                color: echarts.color.modifyHSL("#5A94DF", Math.round(350)),
+            },
+        },
+    },
+    {
+        coords: getData([
+            [116.4383, 40.1471],
+            [114.5383, 25.1471],
+        ]),
+        lineStyle: {
+            normal: {
+                color: echarts.color.modifyHSL("#5A94DF", Math.round(160)),
+            },
+        },
+    },
+    {
+        coords: getData([
+            [116.4383, 40.1471],
+            [118.5383, 33.1471],
+        ]),
+        lineStyle: {
+            normal: {
+                color: echarts.color.modifyHSL("#5A94DF", Math.round(140)),
+            },
+        },
+    },
+    {
+        coords: getData([
+            [116.4383, 40.1471],
+            [123.5383, 28.1471],
+        ]),
+        lineStyle: {
+            normal: {
+                color: echarts.color.modifyHSL("#5A94DF", Math.round(250)),
+            },
+        },
+    },
+];
+
 export default {
+    data() {
+        return {
+            json: [],
+            nodes: [],
+        };
+    },
+
     props: {
         data: {
             default: [
@@ -401,6 +546,8 @@ export default {
         },
     },
 
+    created() {},
+
     mounted() {
         console.log(
             "this.convertData(this.data)",
@@ -412,11 +559,17 @@ export default {
                     .slice(0, 6)
             )
         );
+
         this.initChart();
     },
 
     methods: {
-        initChart() {
+        async initChart() {
+            let json = await import("./newData.json");
+            console.log("json", json);
+            this.json = json;
+            this.nodes = [...json.nodes];
+
             let mapWrap = this.$refs["chart-wrap"];
             this.chart = echarts.init(mapWrap);
 
@@ -551,98 +704,452 @@ export default {
                         ],
                     },
                 },
+                // series: [
+                //     {
+                //         name: "pm2.5",
+                //         type: "scatter",
+                //         coordinateSystem: "bmap",
+                //         data: this.convertData(this.data),
+                //         symbolSize: function (val) {
+                //             return val[2] / 10;
+                //         },
+                //         encode: {
+                //             value: 2,
+                //         },
+                //         label: {
+                //             formatter: "{b}",
+                //             position: "right",
+                //             show: false,
+                //         },
+                //         emphasis: {
+                //             label: {
+                //                 show: true,
+                //             },
+                //         },
+                //     },
+
+                //     // {
+                //     //     name : "pm2.5",
+                //     //     type : 'scatter',
+                //     //     coordinateSystem : 'bmap',
+                //     //     data : [
+                //     //         {
+                //     //             name : '合肥',
+                //     //             value : [117.27, 31.86, 229]
+                //     //         }
+                //     //     ],
+                //     //     symbolSize: function (val) {
+                //     //         return 10;
+                //     //     },
+                //     //     encode: {
+                //     //         value: 2,
+                //     //     },
+                //     //     label: {
+                //     //         formatter: "{b}",
+                //     //         position: "right",
+                //     //         show: false,
+                //     //     },
+                //     //     emphasis: {
+                //     //         label: {
+                //     //             show: true,
+                //     //         },
+                //     //     },
+                //     // }
+
+                //     {
+                //         name: "Top 5",
+                //         type: "effectScatter",
+                //         coordinateSystem: "bmap",
+                //         data: this.convertData(
+                //             this.data
+                //                 .sort(function (a, b) {
+                //                     return b.value - a.value;
+                //                 })
+                //                 .slice(0, 6)
+                //         ),
+                //         symbolSize: function (val) {
+                //             return val[2] / 10;
+                //         },
+                //         encode: {
+                //             value: 2,
+                //         },
+                //         showEffectOn: "render",
+                //         rippleEffect: {
+                //             brushType: "stroke",
+                //         },
+                //         label: {
+                //             formatter: "{b}",
+                //             position: "right",
+                //             show: true,
+                //         },
+                //         itemStyle: {
+                //             shadowBlur: 10,
+                //             shadowColor: "#333",
+                //         },
+                //         emphasis: {
+                //             scale: true,
+                //         },
+                //         zlevel: 1,
+                //     },
+
+                // ],
+
                 series: [
+                    // {
+                    //     type: "custom",
+                    //     coordinateSystem: "bmap",
+                    //     // renderItem: renderItem,
+                    //     // renderItem: function (params, api) {
+                    //     //     return {
+                    //     //         type: "circle",
+                    //     //         shape: {
+                    //     //             cx: 100, // x 位置永远为 100
+                    //     //             cy: api.coord([0, api.value(0)])[1],
+                    //     //             r: 30,
+                    //     //         },
+                    //     //         style: {
+                    //     //             fill: "blue",
+                    //     //         },
+                    //     //     };
+                    //     // },
+
+                    //     renderItem: function (params, api) {
+                    //         return {
+                    //             type: "arc",
+                    //             shape: {
+                    //                 cx: 100, // x 位置永远为 100
+                    //                 // cy: api.coord([0, api.value(0)])[1],
+                    //                 cy: 200,
+                    //                 startAngle: 30,
+                    //                 endAngle: 30,
+                    //             },
+                    //             style: {
+                    //                 fill: "blue",
+                    //             },
+                    //         };
+                    //     },
+                    //     itemStyle: {
+                    //         opacity: 0.5,
+                    //     },
+                    //     animation: false,
+                    //     silent: true,
+                    //     // data: [0],
+                    //     data: [
+                    //         { value: 1048, name: "Search Engine" },
+                    //         { value: 735, name: "Direct" },
+                    //         { value: 580, name: "Email" },
+                    //         { value: 484, name: "Union Ads" },
+                    //         { value: 300, name: "Video Ads" },
+                    //     ],
+                    //     z: -10,
+                    // },
+
+                    // {
+                    //     type: "lines",
+                    //     coordinateSystem: "bmap",
+                    //     polyline: true,
+                    //     data: busLines,
+                    //     lineStyle: {
+                    //         normal: {
+                    //             width: 5,
+                    //         },
+                    //     },
+                    //     effect: {
+                    //         constantSpeed: 50,
+                    //         show: true,
+                    //         trailLength: 0.5,
+                    //         symbolSize: 2,
+                    //     },
+                    //     zlevel: 1,
+                    // },
+
                     {
-                        name: "pm2.5",
-                        type: "scatter",
+                        name: "Les Miserables",
+                        type: "graph",
+                        layout: "none",
                         coordinateSystem: "bmap",
-                        data: this.convertData(this.data),
-                        symbolSize: function (val) {
-                            return val[2] / 10;
-                        },
-                        encode: {
-                            value: 2,
-                        },
+                        data: this.nodes,
+                        // markPoint: {
+                        //     // markLine 也是同理
+                        //     data: [
+                        //         {
+                        //             coord: [0.4383, 40.1471], // 其中 5 表示 xAxis.data[5]，即 '33' 这个元素。
+                        //             // coord: ['5', 33.4] // 其中 '5' 表示 xAxis.data中的 '5' 这个元素。
+                        //             // 注意，使用这种方式时，xAxis.data 不能写成 [number, number, ...]
+                        //             // 而只能写成 [string, string, ...]
+                        //         },
+                        //     ],
+                        // },
+                        links: [],
+                        categories: json.categories,
+                        roam: true,
                         label: {
-                            formatter: "{b}",
+                            show: true,
                             position: "right",
-                            show: false,
+                            formatter: "{b}",
                         },
+                        labelLayout: {
+                            hideOverlap: true,
+                        },
+                        scaleLimit: {
+                            min: 0.4,
+                            max: 2,
+                        },
+                        lineStyle: {
+                            color: "source",
+                            opacity: 1,
+                            curveness: 0.3,
+                        },
+
                         emphasis: {
-                            label: {
-                                show: true,
+                            // focus: "self",
+                            lineStyle: {
+                                color: "source",
+                                opacity: 1,
+                                curveness: 0.3,
                             },
                         },
                     },
-
-                    // {
-                    //     name : "pm2.5",
-                    //     type : 'scatter',
-                    //     coordinateSystem : 'bmap',
-                    //     data : [
-                    //         {
-                    //             name : '合肥',
-                    //             value : [117.27, 31.86, 229]
-                    //         }
-                    //     ],
-                    //     symbolSize: function (val) {
-                    //         return 10;
-                    //     },
-                    //     encode: {
-                    //         value: 2,
-                    //     },
-                    //     label: {
-                    //         formatter: "{b}",
-                    //         position: "right",
-                    //         show: false,
-                    //     },
-                    //     emphasis: {
-                    //         label: {
-                    //             show: true,
-                    //         },
-                    //     },
-                    // }
-
-                    {
-                        name: "Top 5",
-                        type: "effectScatter",
-                        coordinateSystem: "bmap",
-                        data: this.convertData(
-                            this.data
-                                .sort(function (a, b) {
-                                    return b.value - a.value;
-                                })
-                                .slice(0, 6)
-                        ),
-                        symbolSize: function (val) {
-                            return val[2] / 10;
-                        },
-                        encode: {
-                            value: 2,
-                        },
-                        showEffectOn: "render",
-                        rippleEffect: {
-                            brushType: "stroke",
-                        },
-                        label: {
-                            formatter: "{b}",
-                            position: "right",
-                            show: true,
-                        },
-                        itemStyle: {
-                            shadowBlur: 10,
-                            shadowColor: "#333",
-                        },
-                        emphasis: {
-                            scale: true,
-                        },
-                        zlevel: 1,
-                    },
-
                 ],
             };
 
             option && this.chart.setOption(option);
+            let chart = this.chart;
+
+            this.chart.on("mouseover", function (params) {
+                console.log(params);
+                let category = params.data.category;
+                console.log("category", category);
+                let links = json.links.reduce((preValue, item) => {
+                    if (item.target == category) {
+                        preValue.push(item);
+                    }
+                    return preValue;
+                }, []);
+                console.log("links", links);
+                chart.setOption({
+                    series: [
+                        {
+                            name: "Les Miserables",
+                            links: links,
+                            lineStyle: {
+                                color: "source",
+                                opacity: 1,
+                                curveness: 0.3,
+                            },
+                        },
+                    ],
+                });
+            });
+
+            this.chart.on("mouseout", function (params) {
+                console.log(params);
+                chart.setOption({
+                    series: [
+                        {
+                            name: "Les Miserables",
+                            links: [],
+                            lineStyle: {
+                                color: "source",
+                                opacity: 0,
+                                curveness: 0.3,
+                            },
+                        },
+                    ],
+                });
+            });
+
+            this.chart.on("click", function (params) {
+                console.log("params", params);
+            });
+
+            this.chart.on("dbclick", function (params) {
+                console.log("params", params);
+                return false;
+            });
+
+            console.log("this.chart", this.chart);
+            var bmap = this.chart.getModel().getComponent("bmap").getBMap();
+            bmap.addControl(new BMap.MapTypeControl());
+            console.log("bmap", bmap);
+            this.createDots(bmap, this);
+
+            // bmap.disableContinuousZoom();
+
+            bmap.addEventListener("click", function (params) {
+                // let bmap = chart.getModel().getComponent("bmap").getBMap();
+                // bmap.disableDragging();
+                // bmap.disableContinuousZoom();
+                console.log("params", params);
+                return false;
+            });
+
+            // bmap.disableDragging();
+            // bmap.disableScrollWheelZoom();
+
+            bmap.addEventListener("dbclick", function (params) {
+                // let bmap = chart.getModel().getComponent("bmap").getBMap();
+                // bmap.disableDragging();
+                // bmap.disableContinuousZoom();
+                return false;
+            });
+
+            bmap.addEventListener("zoomend", (e) => {
+                console.log("pp->", this.markerClusterer);
+                this.reDrawDots(this.markerClusterer);
+            });
+        },
+
+        reDrawDots(markerClusterer) {
+            console.log("_clusters001", markerClusterer);
+            let { _clusters } = markerClusterer;
+            console.log("_clusters00", _clusters);
+            let centerDots = [];
+            let hideMarkers = [];
+
+            _clusters.forEach((item) => {
+                let latlng = [item._center.lng, item._center.lat];
+                let id = "";
+                if (item._markers.length > 1) {
+                    console.log("hideMarkers-item", item);
+                    hideMarkers = hideMarkers.concat(item._markers);
+                    let marker = item._markers[0];
+                    let rowData = this.json.nodes.find((item) => {
+                        if (
+                            item.value[0] === marker.point.lng &&
+                            item.value[1] === marker.point.lat
+                        ) {
+                            return item;
+                        }
+                    });
+
+                    console.log("rowData", rowData);
+                    id = rowData.id;
+
+                    centerDots.push({
+                        id,
+                        latlng,
+                    });
+                }
+            });
+
+            console.log("hideMarkers", hideMarkers);
+
+            let centerDotsData = centerDots.map((item) => {
+                return {
+                    id: item.id,
+                    name: "聚合点",
+                    symbolSize: 40,
+                    x: -418.08344,
+                    y: 446.8853,
+                    value: item.latlng,
+                    category: 0,
+                };
+            });
+
+            let remainMarker = [];
+            this.json.nodes.forEach((item) => {
+                if (
+                    hideMarkers.find((marker) => {
+                        if (
+                            item.value[0] === marker.point.lng &&
+                            item.value[1] === marker.point.lat
+                        ) {
+                            return marker;
+                        }
+                    }) === undefined
+                ) {
+                    remainMarker.push(item);
+                }
+            });
+
+            console.log("remainMarker", remainMarker);
+            console.log("centerDotsData", centerDotsData);
+
+            let finalData = remainMarker.concat(centerDotsData);
+            console.log("finalData", finalData);
+
+            setTimeout(() => {
+                this.chart.setOption({
+                    series: [
+                        {
+                            name: "Les Miserables",
+                            data: finalData,
+                        },
+                    ],
+                });
+            }, 100);
+        },
+
+
+        polymerizeNodes(originNodes){
+
+        },
+
+        createDots(bmap, vue) {
+            let cache = [
+                [108.968311, 34.329368],
+                [117.338938, 31.721347],
+                [117.129669, 31.813201],
+                [117.276272, 31.91379],
+
+                [117.415977, 31.85345],
+                [117.415111, 31.85345],
+                [117.415977, 31.85001],
+                [117.415165, 31.85523],
+
+
+                [117.414827, 31.762127],
+                [117.175087, 31.903],
+                [117.22108, 31.832346],
+                [117.180261, 31.695297],
+                [117.35676, 31.838236],
+                [117.05263, 31.839708],
+            ];
+            var markers = [];
+            var pt = null;
+
+            for (let item of cache) {
+                pt = new BMap.Point(item[0], item[1]);
+                markers.push(
+                    new BMap.Marker(pt, {
+                        enableClicking: false,
+                    })
+                );
+            }
+            //最简单的用法，生成一个marker数组，然后调用markerClusterer类即可。
+            var markerClusterer = new BMapLib.MarkerClusterer(bmap, {
+                markers: markers,
+                enableClicking: false,
+            });
+
+            vue.markerClusterer = markerClusterer;
+
+            let _clusters = markerClusterer._clusters;
+            console.log("_clusters", _clusters);
+            let cluster = _clusters[0];
+
+            let _clusterMarker = _clusters[0]._clusterMarker;
+            console.log("_clusterMarker", _clusterMarker);
+        },
+
+        createRandomDots(bmap) {
+            var MAX = 10;
+            var markers = [];
+            var pt = null;
+            var i = 0;
+
+            for (; i < MAX; i++) {
+                pt = new BMap.Point(
+                    Math.random() * 40 + 85,
+                    Math.random() * 30 + 21
+                );
+                markers.push(new BMap.Marker(pt));
+            }
+            //最简单的用法，生成一个marker数组，然后调用markerClusterer类即可。
+            var markerClusterer = new BMapLib.MarkerClusterer(bmap, {
+                markers: markers,
+            });
         },
 
         convertData(data) {

@@ -31,6 +31,7 @@ global.THREE = THREE;
 
 
 
+
 Vue.config.productionTip = false;
 
 /*---init axios---*/

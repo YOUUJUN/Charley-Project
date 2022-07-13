@@ -570,6 +570,10 @@ export default {
             this.json = json;
             this.nodes = [...json.nodes];
 
+            let finalNodes = this.polymerizeNodes(this.nodes);
+            console.log("finalNodes-->", finalNodes);
+            this.finalNodes = finalNodes;
+
             let mapWrap = this.$refs["chart-wrap"];
             this.chart = echarts.init(mapWrap);
 
@@ -868,7 +872,8 @@ export default {
                         type: "graph",
                         layout: "none",
                         coordinateSystem: "bmap",
-                        data: this.nodes,
+                        // data: this.nodes,
+                        data: finalNodes,
                         // markPoint: {
                         //     // markLine 也是同理
                         //     data: [
@@ -1014,7 +1019,7 @@ export default {
                     console.log("hideMarkers-item", item);
                     hideMarkers = hideMarkers.concat(item._markers);
                     let marker = item._markers[0];
-                    let rowData = this.json.nodes.find((item) => {
+                    let rowData = this.finalNodes.find((item) => {
                         if (
                             item.value[0] === marker.point.lng &&
                             item.value[1] === marker.point.lat
@@ -1048,7 +1053,7 @@ export default {
             });
 
             let remainMarker = [];
-            this.json.nodes.forEach((item) => {
+            this.finalNodes.forEach((item) => {
                 if (
                     hideMarkers.find((marker) => {
                         if (
@@ -1081,9 +1086,43 @@ export default {
             }, 100);
         },
 
+        polymerizeNodes(originNodes) {
+            let finalNodes = [];
+            let lnglatCache = new Set();
+            let dataCache = new Map();
 
-        polymerizeNodes(originNodes){
+            originNodes.forEach((item) => {
+                let lnglat =
+                    item.value[0].toFixed(1) + item.value[1].toFixed(1);
 
+                if (!lnglatCache.has(lnglat)) {
+                    dataCache.set(lnglat, [item]);
+                    lnglatCache.add(lnglat);
+                } else {
+                    let cacheArr = dataCache.get(lnglat);
+                    let newObj = {
+                        id: cacheArr[0].id,
+                        name: "The One",
+                        symbolSize: 100,
+                        label : {
+                            position: 'inside'
+                        },
+                        value: [117.415977, 31.85345],
+                        category: 0,
+                    };
+                    // cacheArr.push(item)
+                    dataCache.set(lnglat, [newObj]);
+                }
+            });
+
+            console.log("dataCache", dataCache);
+
+            dataCache.forEach((value, key, map) => {
+                console.log("dataCachevalue", value);
+                finalNodes = finalNodes.concat(value);
+            });
+
+            return finalNodes;
         },
 
         createDots(bmap, vue) {
@@ -1098,7 +1137,6 @@ export default {
                 [117.415977, 31.85001],
                 [117.415165, 31.85523],
 
-
                 [117.414827, 31.762127],
                 [117.175087, 31.903],
                 [117.22108, 31.832346],
@@ -1106,6 +1144,11 @@ export default {
                 [117.35676, 31.838236],
                 [117.05263, 31.839708],
             ];
+
+            cache = this.finalNodes.map((item) => {
+                return item.value;
+            });
+
             var markers = [];
             var pt = null;
 

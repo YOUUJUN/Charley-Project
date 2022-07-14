@@ -757,13 +757,14 @@
       T.lang.inherits(TextIconOverlay, BMap.Overlay, "TextIconOverlay");
   
       TextIconOverlay.prototype._setupDefaultStyles = function(){  
-          var sizes = [53, 56, 66, 78, 90];
+          var sizes = [1, 1, 1, 1, 1];
           for(var i = 0, size; size = sizes[i]; i++){
               this._styles.push({
                   url:_IMAGE_PATH + i + '.' + _IMAGE_EXTENSION,
                   size: new BMap.Size(size, size)
               });
           }//for循环的简洁写法
+          console.log('_styles', this._styles);
       };
   
       /**
@@ -866,7 +867,10 @@
       */
       TextIconOverlay.prototype._updateText = function(){
           if (this._domElement) {
-              this._domElement.innerHTML = this._text;
+            //   this._domElement.innerHTML = this._text;
+              this._domElement.innerHTML = "";
+              this._domElement.cssText = "display:none;"
+              console.log('this._domElement;', this._domElement);
           }
       };
   

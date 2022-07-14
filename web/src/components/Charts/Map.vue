@@ -151,6 +151,8 @@ export default {
         return {
             json: [],
             nodes: [],
+            links: [],
+            polyLinks: [],
         };
     },
 
@@ -569,6 +571,7 @@ export default {
             console.log("json", json);
             this.json = json;
             this.nodes = [...json.nodes];
+            this.links = [...json.links];
 
             let finalNodes = this.polymerizeNodes(this.nodes);
             console.log("finalNodes-->", finalNodes);
@@ -921,7 +924,7 @@ export default {
             option && this.chart.setOption(option);
             let chart = this.chart;
 
-            this.chart.on("mouseover", function (params) {
+            this.chart.on("mouseover", (params) => {
                 console.log(params);
                 let category = params.data.category;
                 console.log("category", category);
@@ -932,11 +935,14 @@ export default {
                     return preValue;
                 }, []);
                 console.log("links", links);
+
+                let newLinks = links.concat(this.polyLinks);
+
                 chart.setOption({
                     series: [
                         {
                             name: "Les Miserables",
-                            links: links,
+                            links: newLinks,
                             lineStyle: {
                                 color: "source",
                                 opacity: 1,
@@ -964,8 +970,12 @@ export default {
                 });
             });
 
-            this.chart.on("click", function (params) {
-                console.log("params", params);
+            this.chart.on("click", (params) => {
+                console.log("params1", params);
+                // let result = this.countCircle(60, params.value, 15)
+                // console.log('result', result);
+
+                this.addMoreDots(params);
             });
 
             this.chart.on("dbclick", function (params) {
@@ -981,11 +991,11 @@ export default {
 
             // bmap.disableContinuousZoom();
 
-            bmap.addEventListener("click", function (params) {
+            bmap.addEventListener("click", (params) => {
                 // let bmap = chart.getModel().getComponent("bmap").getBMap();
                 // bmap.disableDragging();
                 // bmap.disableContinuousZoom();
-                console.log("params", params);
+                // console.log("params", params);
                 return false;
             });
 
@@ -1006,6 +1016,7 @@ export default {
         },
 
         reDrawDots(markerClusterer) {
+            console.log("dataCache", this.dataCache);
             console.log("_clusters001", markerClusterer);
             let { _clusters } = markerClusterer;
             console.log("_clusters00", _clusters);
@@ -1030,21 +1041,28 @@ export default {
 
                     console.log("rowData", rowData);
                     id = rowData.id;
+                    let count = item._markers.length;
 
                     centerDots.push({
                         id,
                         latlng,
+                        count,
                     });
                 }
             });
+
+            console.log("centerDots", centerDots);
 
             console.log("hideMarkers", hideMarkers);
 
             let centerDotsData = centerDots.map((item) => {
                 return {
                     id: item.id,
-                    name: "聚合点",
-                    symbolSize: 40,
+                    name: item.count,
+                    symbolSize: 25,
+                    label: {
+                        position: "inside",
+                    },
                     x: -418.08344,
                     y: 446.8853,
                     value: item.latlng,
@@ -1073,6 +1091,7 @@ export default {
 
             let finalData = remainMarker.concat(centerDotsData);
             console.log("finalData", finalData);
+            this.currentDots = finalData;
 
             setTimeout(() => {
                 this.chart.setOption({
@@ -1101,26 +1120,56 @@ export default {
                 } else {
                     let cacheArr = dataCache.get(lnglat);
                     let newObj = {
-                        id: cacheArr[0].id,
+                        id: item.id,
                         name: "The One",
-                        symbolSize: 100,
-                        label : {
-                            position: 'inside'
+                        symbolSize: 8,
+                        hidden: true,
+                        label: {
+                            position: "inside",
                         },
-                        value: [117.415977, 31.85345],
-                        category: 0,
+                        value: item.value,
+                        category: item.category,
                     };
-                    // cacheArr.push(item)
-                    dataCache.set(lnglat, [newObj]);
+                    cacheArr.push(newObj);
+                    dataCache.set(lnglat, cacheArr);
                 }
             });
 
             console.log("dataCache", dataCache);
+            this.dataCache = dataCache;
 
             dataCache.forEach((value, key, map) => {
                 console.log("dataCachevalue", value);
-                finalNodes = finalNodes.concat(value);
+                if (value.length > 1) {
+                    // let lastLink = this.links[this.links.length - 1];
+                    // let lastNodes = this.nodes[this.nodes.length - 1];
+
+                    // this.links.push({
+                    //     source: "1",
+                    //     target: "0",
+                    // });
+
+                    let firstItem = value[0];
+                    for (let item of value) {
+                        let newObj = {
+                            id: item.id,
+                            name: value.length,
+                            symbolSize: 25,
+                            label: {
+                                position: "inside",
+                            },
+                            value: firstItem.value,
+                            category: firstItem.category,
+                        };
+                        console.log("newObj", newObj);
+                        finalNodes = finalNodes.concat([newObj]);
+                    }
+                } else {
+                    finalNodes = finalNodes.concat(value);
+                }
             });
+
+            console.log("finalNodes--->1", finalNodes);
 
             return finalNodes;
         },
@@ -1133,6 +1182,10 @@ export default {
                 [117.276272, 31.91379],
 
                 [117.415977, 31.85345],
+                // [117.415977, 31.85345],
+                // [117.415977, 31.85345],
+                // [117.415977, 31.85345],
+
                 [117.415111, 31.85345],
                 [117.415977, 31.85001],
                 [117.415165, 31.85523],
@@ -1195,6 +1248,61 @@ export default {
             });
         },
 
+        addMoreDots(params) {
+            console.log("value", params.value);
+            let lnglat =
+                params.value[0].toFixed(1) + params.value[1].toFixed(1);
+            let dataCache = this.dataCache;
+            let allDots = dataCache.get(lnglat);
+            console.log("allDots", allDots);
+            let hiddenDots = [];
+            let centerId = "";
+            
+            let dotsStore = this.countCircle(6000, params.value, allDots.length)
+            dotsStore = dotsStore[0]
+
+            allDots.forEach((dot, index) => {
+                if (dot.hidden) {
+                    let newLng = dot.value[0];
+                    let newLat = dot.value[1] + 0.01 * (index + 1);
+
+                    let thedot = Object.assign({}, dot, {
+                        value: [dotsStore[index][0], dotsStore[index][1]],
+                    });
+                    hiddenDots.push(thedot);
+                } else {
+                    console.log("remainDot", dot);
+                    centerId = dot.id;
+                }
+            });
+
+            console.log("hiddenDots", hiddenDots);
+
+            let links = [];
+            hiddenDots.forEach((item) => {
+                let obj = {
+                    source: item.id,
+                    target: centerId,
+                };
+                links.push(obj);
+            });
+
+            let newDots = this.currentDots.concat(hiddenDots);
+            this.polyLinks = links;
+
+            setTimeout(() => {
+                this.chart.setOption({
+                    series: [
+                        {
+                            name: "Les Miserables",
+                            data: newDots,
+                            links: links,
+                        },
+                    ],
+                });
+            }, 100);
+        },
+
         convertData(data) {
             var res = [];
             for (var i = 0; i < data.length; i++) {
@@ -1207,6 +1315,43 @@ export default {
                 }
             }
             return res;
+        },
+
+        // t：半径
+        // e：中心点经纬度坐标[110,40]
+        // i： 圆上点的个数，默认15个，建议73个
+        countCircle(t, e, i) {
+            console.log('e', e)
+            for (
+                var r = t / 6378137,
+                    n = [e[0], e[1]],
+                    o = [this.numberToRadius(n[1]), this.numberToRadius(n[0])],
+                    s = ((i = i || 15), []),
+                    a = 0;
+                a < i;
+                a++
+            ) {
+                var u = (2 * Math.PI * a) / i;
+                var h = Math.asin(
+                    Math.sin(o[0]) * Math.cos(r) +
+                        Math.cos(o[0]) * Math.sin(r) * Math.cos(u)
+                );
+                var c =
+                    o[1] +
+                    Math.atan2(
+                        Math.sin(u) * Math.sin(r) * Math.cos(o[0]),
+                        Math.cos(r) - Math.sin(o[0]) * Math.sin(h)
+                    );
+                s.push([this.numberToDegree(c), this.numberToDegree(h)]);
+            }
+            s.push(s[0]);
+            return [s];
+        },
+        numberToRadius(t) {
+            return (t * Math.PI) / 180;
+        },
+        numberToDegree(t) {
+            return (180 * t) / Math.PI;
         },
     },
 };

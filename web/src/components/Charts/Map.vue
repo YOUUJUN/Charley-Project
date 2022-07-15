@@ -153,6 +153,7 @@ export default {
             nodes: [],
             links: [],
             polyLinks: [],
+            clusterLinks : [],
         };
     },
 
@@ -936,7 +937,7 @@ export default {
                 }, []);
                 console.log("links", links);
 
-                let newLinks = links.concat(this.polyLinks);
+                let newLinks = links.concat(this.polyLinks).concat(this.clusterLinks);
 
                 chart.setOption({
                     series: [
@@ -1009,6 +1010,7 @@ export default {
                 return false;
             });
 
+            this.reDrawDots(this.markerClusterer);
             bmap.addEventListener("zoomend", (e) => {
                 console.log("pp->", this.markerClusterer);
                 this.reDrawDots(this.markerClusterer);
@@ -1023,7 +1025,7 @@ export default {
             let centerDots = [];
             let hideMarkers = [];
 
-            _clusters.forEach((item) => {
+            _clusters.forEach((item, index) => {
                 let latlng = [item._center.lng, item._center.lat];
                 let id = "";
                 if (item._markers.length > 1) {
@@ -1040,7 +1042,9 @@ export default {
                     });
 
                     console.log("rowData", rowData);
-                    id = rowData.id;
+                    // id = rowData.id;
+                    id = 0 - (index + 1);
+                    id = id.toString();
                     let count = item._markers.length;
 
                     centerDots.push({
@@ -1048,6 +1052,8 @@ export default {
                         latlng,
                         count,
                     });
+
+                    item._id = id;
                 }
             });
 
@@ -1069,6 +1075,13 @@ export default {
                     category: 0,
                 };
             });
+
+            this.clusterLinks = centerDots.map((item) => {
+                return {
+                    source: item.id,
+                    target: "0",
+                }
+            })
 
             let remainMarker = [];
             this.finalNodes.forEach((item) => {
@@ -1160,6 +1173,7 @@ export default {
                             },
                             value: firstItem.value,
                             category: firstItem.category,
+                            ifPoly : true
                         };
                         console.log("newObj", newObj);
                         finalNodes = finalNodes.concat([newObj]);
@@ -1249,31 +1263,37 @@ export default {
         },
 
         addMoreDots(params) {
-            console.log("value", params.value);
+            console.log("params==>", params);
             let lnglat =
                 params.value[0].toFixed(1) + params.value[1].toFixed(1);
             let dataCache = this.dataCache;
             let allDots = dataCache.get(lnglat);
             console.log("allDots", allDots);
             let hiddenDots = [];
-            let centerId = "";
-            
-            let dotsStore = this.countCircle(6000, params.value, allDots.length)
-            dotsStore = dotsStore[0]
+            let centerId = params.data.id;
+            console.log('centerId', centerId);
+
+            let dotsStore = this.countCircle(
+                6000,
+                params.value,
+                allDots.length
+            );
+            dotsStore = dotsStore[0];
 
             allDots.forEach((dot, index) => {
                 if (dot.hidden) {
-                    let newLng = dot.value[0];
-                    let newLat = dot.value[1] + 0.01 * (index + 1);
-
-                    let thedot = Object.assign({}, dot, {
-                        value: [dotsStore[index][0], dotsStore[index][1]],
-                    });
-                    hiddenDots.push(thedot);
                 } else {
                     console.log("remainDot", dot);
-                    centerId = dot.id;
+                    
                 }
+
+                let newLng = dot.value[0];
+                let newLat = dot.value[1] + 0.01 * (index + 1);
+
+                let thedot = Object.assign({}, dot, {
+                    value: [dotsStore[index][0], dotsStore[index][1]],
+                });
+                hiddenDots.push(thedot);
             });
 
             console.log("hiddenDots", hiddenDots);
@@ -1289,6 +1309,7 @@ export default {
 
             let newDots = this.currentDots.concat(hiddenDots);
             this.polyLinks = links;
+            console.log('polyLinks',links);
 
             setTimeout(() => {
                 this.chart.setOption({
@@ -1321,7 +1342,7 @@ export default {
         // e：中心点经纬度坐标[110,40]
         // i： 圆上点的个数，默认15个，建议73个
         countCircle(t, e, i) {
-            console.log('e', e)
+            console.log("e", e);
             for (
                 var r = t / 6378137,
                     n = [e[0], e[1]],

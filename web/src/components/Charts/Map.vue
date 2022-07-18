@@ -151,9 +151,11 @@ export default {
         return {
             json: [],
             nodes: [],
+            hiddenDots: [],
             links: [],
             polyLinks: [],
-            clusterLinks : [],
+            clusterLinks: [],
+            clusters : []
         };
     },
 
@@ -926,32 +928,36 @@ export default {
             let chart = this.chart;
 
             this.chart.on("mouseover", (params) => {
-                console.log(params);
-                let category = params.data.category;
-                console.log("category", category);
-                let links = json.links.reduce((preValue, item) => {
-                    if (item.target == category) {
-                        preValue.push(item);
-                    }
-                    return preValue;
-                }, []);
-                console.log("links", links);
+                // console.log(params);
+                // let category = params.data.category;
+                // console.log("category", category);
+                // let links = json.links.reduce((preValue, item) => {
+                //     if (item.target == category) {
+                //         preValue.push(item);
+                //     }
+                //     return preValue;
+                // }, []);
+                // console.log("links", links);
 
-                let newLinks = links.concat(this.polyLinks).concat(this.clusterLinks);
+                // let newLinks = links
+                //     .concat(this.polyLinks)
+                //     .concat(this.clusterLinks);
 
-                chart.setOption({
-                    series: [
-                        {
-                            name: "Les Miserables",
-                            links: newLinks,
-                            lineStyle: {
-                                color: "source",
-                                opacity: 1,
-                                curveness: 0.3,
-                            },
-                        },
-                    ],
-                });
+                // chart.setOption({
+                //     series: [
+                //         {
+                //             name: "Les Miserables",
+                //             links: newLinks,
+                //             lineStyle: {
+                //                 color: "source",
+                //                 opacity: 1,
+                //                 curveness: 0.3,
+                //             },
+                //         },
+                //     ],
+                // });
+
+                this.setRelevance(params);
             });
 
             this.chart.on("mouseout", function (params) {
@@ -972,7 +978,7 @@ export default {
             });
 
             this.chart.on("click", (params) => {
-                console.log("params1", params);
+                console.log("params-->1", params);
                 // let result = this.countCircle(60, params.value, 15)
                 // console.log('result', result);
 
@@ -996,7 +1002,19 @@ export default {
                 // let bmap = chart.getModel().getComponent("bmap").getBMap();
                 // bmap.disableDragging();
                 // bmap.disableContinuousZoom();
-                // console.log("params", params);
+                console.log("params-->2", params);
+
+                this.hiddenDots = [];
+                let newDots = this.currentDots.concat(this.hiddenDots);
+
+                this.chart.setOption({
+                    series: [
+                        {
+                            name: "Les Miserables",
+                            data: newDots,
+                        },
+                    ],
+                });
                 return false;
             });
 
@@ -1057,6 +1075,9 @@ export default {
                 }
             });
 
+            this.clusters = _clusters;
+            
+
             console.log("centerDots", centerDots);
 
             console.log("hideMarkers", hideMarkers);
@@ -1080,8 +1101,8 @@ export default {
                 return {
                     source: item.id,
                     target: "0",
-                }
-            })
+                };
+            });
 
             let remainMarker = [];
             this.finalNodes.forEach((item) => {
@@ -1106,12 +1127,14 @@ export default {
             console.log("finalData", finalData);
             this.currentDots = finalData;
 
+            let renderDots = finalData.concat(this.hiddenDots);
+
             setTimeout(() => {
                 this.chart.setOption({
                     series: [
                         {
                             name: "Les Miserables",
-                            data: finalData,
+                            data: renderDots,
                         },
                     ],
                 });
@@ -1125,7 +1148,7 @@ export default {
 
             originNodes.forEach((item) => {
                 let lnglat =
-                    item.value[0].toFixed(1) + item.value[1].toFixed(1);
+                    item.value[0].toFixed(2) + item.value[1].toFixed(2);
 
                 if (!lnglatCache.has(lnglat)) {
                     dataCache.set(lnglat, [item]);
@@ -1173,7 +1196,7 @@ export default {
                             },
                             value: firstItem.value,
                             category: firstItem.category,
-                            ifPoly : true
+                            ifPoly: true,
                         };
                         console.log("newObj", newObj);
                         finalNodes = finalNodes.concat([newObj]);
@@ -1263,18 +1286,38 @@ export default {
         },
 
         addMoreDots(params) {
+            this.hiddenDots = [];
             console.log("params==>", params);
+            console.log('clusters', this.clusters);
             let lnglat =
-                params.value[0].toFixed(1) + params.value[1].toFixed(1);
+                params.value[0].toFixed(2) + params.value[1].toFixed(2);
+
+            let centerCluster = this.clusters.find(item => {
+                let clusterLnglat = item._center.lng.toFixed(2) + item._center.lat.toFixed(2);
+                if(clusterLnglat === lnglat){
+                    return item;
+                }
+            })
+
+
+
+            console.log('centerCluster', centerCluster)
+            // centerCluster._clusterMarker._domElement.click()
+
+
+
             let dataCache = this.dataCache;
             let allDots = dataCache.get(lnglat);
             console.log("allDots", allDots);
+            if (allDots.length < 2) {
+                return;
+            }
             let hiddenDots = [];
             let centerId = params.data.id;
-            console.log('centerId', centerId);
+            console.log("centerId", centerId);
 
             let dotsStore = this.countCircle(
-                6000,
+                800,
                 params.value,
                 allDots.length
             );
@@ -1284,7 +1327,6 @@ export default {
                 if (dot.hidden) {
                 } else {
                     console.log("remainDot", dot);
-                    
                 }
 
                 let newLng = dot.value[0];
@@ -1298,6 +1340,15 @@ export default {
 
             console.log("hiddenDots", hiddenDots);
 
+            let centerClusterLnglat = centerCluster._center.lng.toFixed(2) + centerCluster._center.lat.toFixed(2);
+            let cachedData = this.dataCache.get(centerClusterLnglat);
+            console.log('params.name', typeof params.name);
+            if(hiddenDots.length < Number(params.name)){
+                centerCluster._clusterMarker._domElement.click()
+            }
+            
+
+
             let links = [];
             hiddenDots.forEach((item) => {
                 let obj = {
@@ -1309,7 +1360,7 @@ export default {
 
             let newDots = this.currentDots.concat(hiddenDots);
             this.polyLinks = links;
-            console.log('polyLinks',links);
+            console.log("polyLinks", links);
 
             setTimeout(() => {
                 this.chart.setOption({
@@ -1321,6 +1372,8 @@ export default {
                         },
                     ],
                 });
+
+                this.hiddenDots = hiddenDots;
             }, 100);
         },
 
@@ -1373,6 +1426,42 @@ export default {
         },
         numberToDegree(t) {
             return (180 * t) / Math.PI;
+        },
+
+        //设置关联关系
+        setRelevance(params) {
+            console.log("params2", params);
+
+            let { id } = params.data;
+            id = id.toString();
+            console.log("id", typeof id);
+            let combineLinks = this.links
+                .concat(this.polyLinks)
+                .concat(this.clusterLinks);
+
+            let renderLinks = combineLinks.filter((item) => {
+                let values = Object.values(item);
+                console.log("values", values, id);
+
+                if (values.includes(id)) {
+                    return item;
+                }
+            });
+
+            console.log("renderLinks", renderLinks);
+            this.chart.setOption({
+                series: [
+                    {
+                        name: "Les Miserables",
+                        links: renderLinks,
+                        lineStyle: {
+                            color: "source",
+                            opacity: 1,
+                            curveness: 0.3,
+                        },
+                    },
+                ],
+            });
         },
     },
 };

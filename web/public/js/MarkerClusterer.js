@@ -457,7 +457,7 @@
          this._isReal = false; //真的是个聚合
      
          this._clusterMarker = new BMapLib.TextIconOverlay(this._center, this._markers.length, {"styles":this._markerClusterer.getStyles()});
-         //this._map.addOverlay(this._clusterMarker);
+         this._map.addOverlay(this._clusterMarker);
      }
     
      /**

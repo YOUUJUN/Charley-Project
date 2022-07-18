@@ -1309,9 +1309,9 @@ export default {
             let dataCache = this.dataCache;
             let allDots = dataCache.get(lnglat);
             console.log("allDots", allDots);
-            if (allDots.length < 2) {
-                return;
-            }
+            // if (allDots.length < 2) {
+            //     return;
+            // }
             let hiddenDots = [];
             let centerId = params.data.id;
             console.log("centerId", centerId);
@@ -1343,8 +1343,14 @@ export default {
             let centerClusterLnglat = centerCluster._center.lng.toFixed(2) + centerCluster._center.lat.toFixed(2);
             let cachedData = this.dataCache.get(centerClusterLnglat);
             console.log('params.name', typeof params.name);
+            console.log('if-go', hiddenDots.length < Number(params.name));
             if(hiddenDots.length < Number(params.name)){
                 centerCluster._clusterMarker._domElement.click()
+                return;
+            }
+
+            if (allDots.length < 2) {
+                return;
             }
             
 

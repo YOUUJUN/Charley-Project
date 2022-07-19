@@ -155,7 +155,7 @@ export default {
             links: [],
             polyLinks: [],
             clusterLinks: [],
-            clusters : []
+            clusters: [],
         };
     },
 
@@ -1076,7 +1076,6 @@ export default {
             });
 
             this.clusters = _clusters;
-            
 
             console.log("centerDots", centerDots);
 
@@ -1288,39 +1287,33 @@ export default {
         addMoreDots(params) {
             this.hiddenDots = [];
             console.log("params==>", params);
-            console.log('clusters', this.clusters);
+            console.log("clusters", this.clusters);
             let lnglat =
                 params.value[0].toFixed(2) + params.value[1].toFixed(2);
 
-            let centerCluster = this.clusters.find(item => {
-                let clusterLnglat = item._center.lng.toFixed(2) + item._center.lat.toFixed(2);
-                if(clusterLnglat === lnglat){
+            let centerCluster = this.clusters.find((item) => {
+                let clusterLnglat =
+                    item._center.lng.toFixed(2) + item._center.lat.toFixed(2);
+                if (clusterLnglat === lnglat) {
                     return item;
                 }
-            })
+            });
 
-
-
-            console.log('centerCluster', centerCluster)
+            console.log("centerCluster", centerCluster);
             // centerCluster._clusterMarker._domElement.click()
-
-
 
             let dataCache = this.dataCache;
             let allDots = dataCache.get(lnglat);
             console.log("allDots", allDots);
-            // if (allDots.length < 2) {
-            //     return;
-            // }
+            if (!allDots) {
+                return;
+            }
+
             let hiddenDots = [];
             let centerId = params.data.id;
             console.log("centerId", centerId);
 
-            let dotsStore = this.countCircle(
-                800,
-                params.value,
-                allDots.length
-            );
+            let dotsStore = this.countCircle(800, params.value, allDots.length);
             dotsStore = dotsStore[0];
 
             allDots.forEach((dot, index) => {
@@ -1340,20 +1333,20 @@ export default {
 
             console.log("hiddenDots", hiddenDots);
 
-            let centerClusterLnglat = centerCluster._center.lng.toFixed(2) + centerCluster._center.lat.toFixed(2);
+            let centerClusterLnglat =
+                centerCluster._center.lng.toFixed(2) +
+                centerCluster._center.lat.toFixed(2);
             let cachedData = this.dataCache.get(centerClusterLnglat);
-            console.log('params.name', typeof params.name);
-            console.log('if-go', hiddenDots.length < Number(params.name));
-            if(hiddenDots.length < Number(params.name)){
-                centerCluster._clusterMarker._domElement.click()
+            console.log("params.name", typeof params.name);
+            console.log("if-go", hiddenDots.length < Number(params.name));
+            if (hiddenDots.length < Number(params.name)) {
+                centerCluster._clusterMarker._domElement.click();
                 return;
             }
 
             if (allDots.length < 2) {
                 return;
             }
-            
-
 
             let links = [];
             hiddenDots.forEach((item) => {
@@ -1440,6 +1433,7 @@ export default {
 
             let { id } = params.data;
             id = id.toString();
+            let numberId = Number(id);
             console.log("id", typeof id);
             let combineLinks = this.links
                 .concat(this.polyLinks)
@@ -1449,8 +1443,14 @@ export default {
                 let values = Object.values(item);
                 console.log("values", values, id);
 
-                if (values.includes(id)) {
-                    return item;
+                if (numberId < 0 && this.hiddenDots.length > 0) {
+                    if (values[1] === id) {
+                        return item;
+                    }
+                } else {
+                    if (values.includes(id) && Number(values[1]) >= 0) {
+                        return item;
+                    }
                 }
             });
 

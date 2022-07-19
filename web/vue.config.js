@@ -16,6 +16,7 @@ const path = require("path");
 
 const webpack = require("webpack");
 const CompressionWebpackPlugin = require('compression-webpack-plugin');
+const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
 
 const productionGzipExtensions = ['js', 'css'];
 
@@ -141,7 +142,9 @@ module.exports = function(){
                 process.env.NODE_ENV === 'development',
                 config => config
                     .plugin('webpack-bundle-analyzer')
-                    .use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin)
+                    .use(new BundleAnalyzerPlugin({
+                        analyzerPort : 'auto',
+                    }))
             );
 
             //优化moment 去掉国际化内容；

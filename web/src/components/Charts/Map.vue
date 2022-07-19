@@ -1246,6 +1246,12 @@ export default {
                 markers.push(
                     new BMap.Marker(pt, {
                         enableClicking: false,
+                        icon: {
+                            size: {
+                                width: 0,
+                                height: 0,
+                            },
+                        },
                     })
                 );
             }
